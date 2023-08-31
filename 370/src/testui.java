@@ -6,6 +6,8 @@ part display (right side)
 Stock Display (right side)
 window resizing compatibility
 blade thickness box
+grain direction input boxes (currently cannont be changed)
+limit framerate
 
 could swap to part objects instead of box/txt array but the only advantage is adding more parts easily
 the problem is if i add more parts i need to redo the display to add a couple more or add a scroll wheel to allow more than like 10 parts.
@@ -13,6 +15,7 @@ the problem is if i add more parts i need to redo the display to add a couple mo
 
 public class testui extends PApplet{
 int rows=7;
+Boolean grain[]= {false,false,true,true,false,true,false,false};//x8 false=horizontal
 Boolean box[]= {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};//x21 
 String	txt[]= {"test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test"};//x21
 String stock[]= {"w","h","q"};
@@ -29,7 +32,7 @@ int i=0;
     public void draw() {
         background(0);
         fill(190);
-        rect(0, 0, width/4, height);//left bar background
+        rect(0, 0, width/3, height);//left bar background
         textSize(20);	//prolly should determine this based on screen size but whatev
         //part display:
         for (i=0;i<rows;i++) {//i=# of current rows (buttons should change this)
@@ -62,6 +65,38 @@ int i=0;
                 }
             fill(10);
            	text(txt[2+(3*i)], 220, 100+(40*i));
+        }
+        //add confirm button and grain toggle here
+        
+        
+        for (i=0;i<rows;i++) {//loop for grain direction boxes
+            if(grain[i]) {
+                fill(200);//vertical display
+                rect(300,110+(40*i),70,-30);
+                fill(10);
+                rect(318,110+(40*i),10,-30);//off by .3333 (dont tell anyone)
+                fill(10);
+                rect(352,110+(40*i),-10,-30);//off by .3333 (dont tell anyone)
+                }else {
+            	fill(200);//horizontal display
+            	rect(300,110+(40*i),70,-30);
+            	fill(10);
+            	rect(300,100+(40*i),70,-10);
+                }
+            //stock grain direction
+            if(grain[7]) {
+                fill(200);//vertical display
+                rect(300,430,70,-30);
+                fill(10);
+                rect(300,0,0,0);
+                fill(10);
+                rect(300,0,0,0);
+                }else {
+            	fill(200);//horizontal display
+            	rect(300,430,70,-30);
+            	fill(10);
+            	rect(300,420,70,-10);
+                }
         }
         //display for Stock
         fill(10);
@@ -146,19 +181,21 @@ if(cooldown<1&&mousePressed){//check if they clicked on a text box or if they cl
 }
 //now that we have checked what box might be selected, handle typing into boxes
 if (keyPressed&&cooldown<1) {
-	cooldown=10;
 	for(i=0;i<(rows*3);i++) {//key handling for every box
 		if(key == BACKSPACE) {
-			if(box[i])txt[i]="";
-			if(Stockbox[0])stock[0]="";
-			if(Stockbox[1])stock[1]="";
-			if(Stockbox[2])stock[2]="";
+			if(box[i]&&cooldown<1)txt[i]="";
+			if(Stockbox[0]&&cooldown<1)stock[0]="";
+			if(Stockbox[1]&&cooldown<1)stock[1]="";
+			if(Stockbox[2]&&cooldown<1)stock[2]="";
+			cooldown=10;
 		}else {
-			if(box[i])txt[i]+=key;
-			if(Stockbox[0])stock[0]+=key;
-			if(Stockbox[1])stock[1]+=key;
-			if(Stockbox[2])stock[2]+=key;
-		}
+			if(key=='0'||key=='1'||key=='2'||key=='3'||key=='4'||key=='5'||key=='6'||key=='7'||key=='8'||key=='9'){//add a check to only allow numerical inputs
+			if(box[i]&&cooldown<1)txt[i]+=key;
+			if(Stockbox[0]&&cooldown<1)stock[0]+=key;
+			if(Stockbox[1]&&cooldown<1)stock[1]+=key;
+			if(Stockbox[2]&&cooldown<1)stock[2]+=key;
+			cooldown=10;
+		}}
 	}	
 	}
 cooldown-=1;
