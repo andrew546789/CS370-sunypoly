@@ -37,7 +37,7 @@ int i=0;
         //part display:
         for (i=0;i<rows;i++) {//i=# of current rows (buttons should change this)
         	fill(10);
-            text("Part "+(i+1)+":",5,100+(40*i));
+            text(cooldown+"Part "+(i+1)+":",5,100+(40*i));
             if(box[0+(3*i)]) {
                 fill(selectedboxcolor);
                 rect(60,110+(40*i),70,-30);
@@ -183,19 +183,42 @@ if(cooldown<1&&mousePressed){//check if they clicked on a text box or if they cl
 if (keyPressed&&cooldown<1) {
 	for(i=0;i<(rows*3);i++) {//key handling for every box
 		if(key == BACKSPACE) {
-			if(box[i]&&cooldown<1)txt[i]="";
-			if(Stockbox[0]&&cooldown<1)stock[0]="";
-			if(Stockbox[1]&&cooldown<1)stock[1]="";
-			if(Stockbox[2]&&cooldown<1)stock[2]="";
-			cooldown=10;
+			if(box[i]&&cooldown<1){
+                txt[i]="";
+                cooldown=10;
+            }
+			if(Stockbox[0]&&cooldown<1){
+                stock[0]="";
+                cooldown=10;
+            }
+			if(Stockbox[1]&&cooldown<1) {
+                stock[1] = "";
+                cooldown=10;
+            }
+			if(Stockbox[2]&&cooldown<1){
+                stock[2]="";
+                cooldown=10;
+            }
 		}else {
-			if(key=='0'||key=='1'||key=='2'||key=='3'||key=='4'||key=='5'||key=='6'||key=='7'||key=='8'||key=='9'){//add a check to only allow numerical inputs
-			if(box[i]&&cooldown<1)txt[i]+=key;
-			if(Stockbox[0]&&cooldown<1)stock[0]+=key;
-			if(Stockbox[1]&&cooldown<1)stock[1]+=key;
-			if(Stockbox[2]&&cooldown<1)stock[2]+=key;
-			cooldown=10;
-		}}
+			if(key=='0'||key=='1'||key=='2'||key=='3'||key=='4'||key=='5'||key=='6'||key=='7'||key=='8'||key=='9') {//add a check to only allow numerical inputs
+                if (box[i] && cooldown < 1){
+                    txt[i] += key;
+                    cooldown=10;
+                }
+                if (Stockbox[0] && cooldown < 1){
+                    stock[0] += key;
+                    cooldown=10;
+                }
+                if (Stockbox[1] && cooldown < 1){
+                    stock[1] += key;
+                    cooldown=10;
+                }
+                if (Stockbox[2] && cooldown < 1){
+                    stock[2] += key;
+                    cooldown=10;
+                }
+            }
+        }
 	}	
 	}
 cooldown-=1;
