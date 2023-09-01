@@ -37,7 +37,7 @@ int i=0;
         //part display:
         for (i=0;i<rows;i++) {//i=# of current rows (buttons should change this)
         	fill(10);
-            text(cooldown+"Part "+(i+1)+":",5,100+(40*i));
+            text("Part "+(i+1)+":",5,100+(40*i));//nice spot to display variables for debug
             if(box[0+(3*i)]) {
                 fill(selectedboxcolor);
                 rect(60,110+(40*i),70,-30);
