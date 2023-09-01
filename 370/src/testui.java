@@ -8,7 +8,7 @@ window resizing compatibility
 blade thickness box
 grain direction input boxes (currently cannont be changed)
 limit framerate
-
+test
 could swap to part objects instead of box/txt array but the only advantage is adding more parts easily
 the problem is if i add more parts i need to redo the display to add a couple more or add a scroll wheel to allow more than like 10 parts.
 */
