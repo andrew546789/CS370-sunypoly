@@ -1,4 +1,5 @@
 import processing.core.*;//this is the library that makes display very easy
+import java.util.ArrayList;//Objects are stinky, arraylist is better
 /*
 To Do List:
 calculate cuts button interactivity
@@ -6,22 +7,30 @@ part display (right side)
 Stock Display (right side)
 window resizing compatibility
 limit framerate?
-
-could swap to part objects instead of box/txt array but the only advantage is adding more parts easily
-the problem is if i add more parts i need to redo the display to add a couple more or add a scroll wheel to allow more than like 10 parts.
-might have to use objects for the display on the right side, as the maximum number of parts is 7*max quantity (prolly at least 700 total)
+convert to arraylists because arrays are finite in size (we will need it for output)
 */
 
 public class testui extends PApplet{
+    ArrayList<Float> x = new ArrayList<Float>();//arraylists are used for output
+    ArrayList<Float> y = new ArrayList<Float>();
+    ArrayList<Float> w = new ArrayList<Float>();
+    ArrayList<Float> l = new ArrayList<Float>();
+    boolean output=false;//if the calculate button has been pressed this will be true and output will stay on screen until calc is clicked again
 int rows=7;
+int colorval=0;
 Boolean grain[]= {false,false,false,false,false,false,false,false,false};//x9 false=horizontal grain[7]=stock grain[8]=t/f if grain direction matters
 Boolean box[]= {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};//x21 
-String	txt[]= {"w","h","q","w","h","q","w","h","q","w","h","q","w","h","q","w","h","q","w","h","q"};//x21
+String	txt[]= {"w","h","q","","","","","","","","","","","","","","","","","",""};//x21
 String stock[]= {"w","h","q","cutwidth"};
+Float tstock[]={(float)0,(float)0,(float)0,(float)0};
 Boolean Stockbox[]= {false,false,false,false};
 int cooldown=0;//frames b4 another input is processed
 int selectedboxcolor=250;
 int i=0;
+//public native void cry();
+  //  {
+    //    System.loadLibrary("kms");
+    //}
     @Override
     public void settings() {
         size(1200, 675);//sets window size (will effect other display elements)
@@ -165,6 +174,16 @@ int i=0;
         rect(300,600,50,50);
         fill(10);
         text("Calculate", 300, 625);
+        if(output){//display for right side of screen
+         //use stock info + arraylist values
+colorval=255*3/rows;
+fill(200);
+rect((float)width/3,(float)0,tstock[0],tstock[1]);
+for(i=0;i<x.size();i++){
+    fill(colorval);//do fancy colors later
+    rect(x.get(i)+width/3,y.get(i),w.get(i),l.get(i));
+}
+        }
     	update();
     }
 	public static void main(String[] args) {
@@ -206,6 +225,28 @@ if(cooldown<1&&mousePressed){//check if they clicked on a text box or if they cl
 	 if(rows>1&&mouseX>240&&mouseX<290&&mouseY<70&&mouseY>20) rows--;
     //grain top toggle check
     if(mouseX>300&&mouseX<350&&mouseY<70&&mouseY>20) grain[8]= !grain[8];
+    //calculate button (calls to the algorithm and will come through here)
+    if(mouseX>300&&mouseX<350&&mouseY<650&&mouseY>600){
+        output=true;
+        for(i=0;i<4;i++){//makes temporary values for stock input
+            tstock[i]=Float.parseFloat(stock[i]);
+        }
+
+        //feed inputs to c
+//new testui().kms(txt[],rows,stock[],grain[]);
+
+
+
+        x.clear();
+        y.clear();
+        w.clear();
+        l.clear();
+        //prolly for loop here to grab all the values
+        x.add((float)1);//adding test output because the algorithm isnt implemented
+        y.add((float)1);
+        w.add((float)1);
+        l.add((float)1);
+    }
 }
 //now that we have checked what box might be selected, handle typing into boxes
 if (keyPressed&&cooldown<1) {
@@ -232,7 +273,7 @@ if (keyPressed&&cooldown<1) {
                 cooldown=10;
             }
 		}else {
-			if(key=='0'||key=='1'||key=='2'||key=='3'||key=='4'||key=='5'||key=='6'||key=='7'||key=='8'||key=='9') {//add a check to only allow numerical inputs
+			if(key=='0'||key=='1'||key=='2'||key=='3'||key=='4'||key=='5'||key=='6'||key=='7'||key=='8'||key=='9'||key=='.') {//add a check to only allow numerical inputs (or decimal)
                 if (box[i] && cooldown < 1){
                     txt[i] += key;
                     cooldown=10;
