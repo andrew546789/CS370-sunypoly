@@ -248,7 +248,7 @@ if(cooldown<1&&mousePressed){//check if they clicked on a text box or if they cl
         l.add((float)1);
     }
 }
-//now that we have checked what box might be selected, handle typing into boxes
+//now that we have checked what box might be selected, handle typing into boxess
 if (keyPressed&&cooldown<1) {
 	for(i=0;i<(rows*3);i++) {//key handling for every box
 		if(key == BACKSPACE) {
