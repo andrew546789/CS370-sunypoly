@@ -178,10 +178,12 @@ int i=0;
          //use stock info + arraylist values
 colorval=255*3/rows;
 fill(200);
-rect((float)width/3,(float)0,tstock[0],tstock[1]);
+rect((float)(width/3)+10,(float)10,tstock[0],tstock[1]);
 for(i=0;i<x.size();i++){
-    fill(colorval);//do fancy colors later
-    rect(x.get(i)+width/3,y.get(i),w.get(i),l.get(i));
+    if(i%3==0)    fill(colorval*((i+3)/3),0,0);//r
+    if(i%3==1)    fill(0,colorval*((i+3)/3),0);//g
+    if(i%3==2)    fill(0,0,colorval*((i+3)/3));//b
+    rect(x.get(i)+width/3+10,y.get(i)+10,w.get(i),l.get(i));
 }
         }
     	update();
@@ -241,11 +243,12 @@ if(cooldown<1&&mousePressed){//check if they clicked on a text box or if they cl
         y.clear();
         w.clear();
         l.clear();
-        //prolly for loop here to grab all the values
-        x.add((float)1);//adding test output because the algorithm isnt implemented
-        y.add((float)1);
-        w.add((float)1);
-        l.add((float)1);
+        for(i=0;i<rows;i++) {
+            x.add((float) 10+20*i);//adding test output because the algorithm isnt implemented
+            y.add((float) 10+5*i);
+            w.add((float) 10);
+            l.add((float) 10+10*i);
+        }
     }
 }
 //now that we have checked what box might be selected, handle typing into boxess
