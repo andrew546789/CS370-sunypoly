@@ -14,6 +14,7 @@ convert to arraylists because arrays are finite in size (we will need it for out
 
 public class testui extends PApplet{
    // private static JFrame mainWnd = null;
+    double scaleFactor;
     ArrayList<Float> x = new ArrayList<Float>();//arraylists are used for output
     ArrayList<Float> y = new ArrayList<Float>();
     ArrayList<Float> w = new ArrayList<Float>();
@@ -197,13 +198,14 @@ int i=0;
         if(output){//display for right side of screen
          //use stock info + arraylist values
 colorval=255*3/rows;
+            scaleFactor = (Math.min(1.0 * width*2/3 / tstock[0], 1.0 * height / tstock[1])) * 0.8;//stock scaling mult
 fill(200);
-rect((float)(width/3)+10,(float)10,tstock[0],tstock[1]);// stock display
+rect((float)(width/3)+10,(float)10, (float)(tstock[0]*scaleFactor),(float)(tstock[1]*scaleFactor));// stock display
 for(i=0;i<x.size();i++){
     if(i%3==0)    fill(colorval*((i+3)/3),0,0);//r
     if(i%3==1)    fill(0,colorval*((i+3)/3),0);//g
     if(i%3==2)    fill(0,0,colorval*((i+3)/3));//b
-    rect(x.get(i)+width/3+10,y.get(i)+10,w.get(i),l.get(i));//part display
+    rect((float)(x.get(i)*scaleFactor)+width/3+10,(float)(y.get(i)*scaleFactor)+10,(float)(w.get(i)*scaleFactor),(float)(l.get(i)*scaleFactor));//part display
 }
         }
     	update();

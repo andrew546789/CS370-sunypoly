@@ -3,7 +3,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class StockRectangleCreator extends JFrame {
+public class StockRectangleCreator extends JFrame { // we need to steal the resizing of the window
+    //and resizing of the rectangle(stock) for our main program.
 
     private JPanel inputPanel; // Panel for user input
     private JPanel drawingPanel; // Panel for displaying the rectangle
