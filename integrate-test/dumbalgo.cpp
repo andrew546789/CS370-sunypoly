@@ -10,7 +10,7 @@ class box
     float width, height, posx, posy;
 };
 
-int main()
+void cry()
 {
     int num,i;
     float Cwidth, Cheight, Bwidth, Bheight;
@@ -27,9 +27,9 @@ int main()
 
     for(i=0;i<num;i++)
     {
-        cout << "input width: ";
+        cout << "input cut width: ";
         cin >> Cwidth;
-        cout << "input height: ";
+        cout << "input cut height: ";
         cin >> Cheight;
         cout << endl;
 
@@ -64,8 +64,6 @@ int main()
     for(i=0;i<num;i++)
     {
         //cout << "y: " << object[i].posy << " x: " << object[i].posx << endl << endl;
-        cout << "box " << i <<" || posx = " << obj[i].posx << " || posy = " << obj[i].posy << endl;
+        cout << "box " << i+1 <<" || posx = " << obj[i].posx << " || posy = " << obj[i].posy << endl;
     }
-
-    return 0;
 }

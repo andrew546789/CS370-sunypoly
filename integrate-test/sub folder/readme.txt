@@ -1,1 +1,0 @@
-there is some namespace called sf that was not included in the program. additionally there is a missing graphics file that i commented out when it conflicted with compiling.
