@@ -33,7 +33,7 @@ int i=0;
     //}
     @Override
     public void settings() {
-        size(1200, 675);//sets window size (will effect other display elements)
+        size(1200, 675);//sets window size (will effect other display elements) normally 1200/675
     }
     @Override
     public void draw() {
@@ -178,12 +178,12 @@ int i=0;
          //use stock info + arraylist values
 colorval=255*3/rows;
 fill(200);
-rect((float)(width/3)+10,(float)10,tstock[0],tstock[1]);
+rect((float)(width/3)+10,(float)10,tstock[0],tstock[1]);// stock display
 for(i=0;i<x.size();i++){
     if(i%3==0)    fill(colorval*((i+3)/3),0,0);//r
     if(i%3==1)    fill(0,colorval*((i+3)/3),0);//g
     if(i%3==2)    fill(0,0,colorval*((i+3)/3));//b
-    rect(x.get(i)+width/3+10,y.get(i)+10,w.get(i),l.get(i));
+    rect(x.get(i)+width/3+10,y.get(i)+10,w.get(i),l.get(i));//part display
 }
         }
     	update();
