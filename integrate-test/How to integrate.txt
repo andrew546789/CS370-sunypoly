@@ -1,4 +1,0 @@
-To make the dll file which is where cpp functions can be called from java contact me to do it since i have it all setup in vbc or 
-watch this video https://www.youtube.com/watch?v=41leCIAzSd0
-
-Additionally the cpp files in this directory are not stuff in use just the tester for the functions i made.
