@@ -1,5 +1,7 @@
 import processing.core.*;//this is the library that makes display very easy
 import java.util.ArrayList;//Objects are stinky, arraylist is better
+import javax.swing.*;
+
 /*
 To Do List:
 calculate cuts button interactivity
@@ -11,6 +13,7 @@ convert to arraylists because arrays are finite in size (we will need it for out
 */
 
 public class testui extends PApplet{
+   // private static JFrame mainWnd = null;
     ArrayList<Float> x = new ArrayList<Float>();//arraylists are used for output
     ArrayList<Float> y = new ArrayList<Float>();
     ArrayList<Float> w = new ArrayList<Float>();
@@ -37,6 +40,23 @@ int i=0;
     }
     @Override
     public void draw() {
+
+
+
+        //mainWnd = new JFrame();
+
+       // mainWnd.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //mainWnd.setTitle("asda");
+        //mainWnd.setBounds(50, 50, 300, 300);
+
+        //mainWnd.setResizable(true);
+        //mainWnd.setVisible(true);
+
+
+
+
+
+
         background(50);
         fill(190);
         rect(0, 0, width/3, height);//left bar background
