@@ -9,7 +9,9 @@ class box
     float width, height, posx, posy;
 };
 
-stack<float>* cry(float stock[], float cut[], int row)
+//float* cry(float[], float[], int);
+
+float* cry(float stock[], float cut[], int row)
 {
     int i=0,j=0,tempj=0,num=0;
 
@@ -22,7 +24,8 @@ stack<float>* cry(float stock[], float cut[], int row)
     }
 
     box obj[num];
-    static stack<float>* out;
+    static int temps = num*4;
+    static float out[16];
 
     for(i=0;i<row*3;i++)
     {
@@ -60,25 +63,49 @@ stack<float>* cry(float stock[], float cut[], int row)
             break;
         }
     }
+
     cout << num*4 << endl <<endl;
-    for(i=num;i>1;i--)
-    {
-        out.push(obj[i].posy);
-        out.push(obj[i].posx);
-        out.push(obj[i].height);
-        out.push(obj[i].width);
-    }
+
+
+     while(i<num)
+     {
+        int tempa=0;
+        if(j%4==0)
+        {
+            out[tempa] = obj[i].width;
+            tempa++;
+        }
+        if(j%4==1)
+        {
+            out[tempa] = obj[i].height;
+            tempa++;
+        }
+        if(j%4==2)
+        {
+            out[tempa] = obj[i].posx;
+            tempa++;
+        }
+        if(j%4==3)
+        {
+            out[tempa] = obj[i].posy;
+            tempa++;
+            i++;
+        }
+        j++;
+     }
 
     for(i=0;i<(sizeof(obj)/sizeof(obj[0]));i++)
     {
         cout << "width: " << obj[i].width << " height: " << obj[i].height << " posx: " << obj[i].posx << " posy: " << obj[i].posy << endl;
     }
 
-    while(!out.empty())
+    cout << endl;
+
+    for(i=0;i<(sizeof(out)/sizeof(out[0]));i++)
     {
-        cout << out.top() << " ";
-        out.pop();
+        cout << out[i] << endl;
     }
+
 
     return out;
 }
