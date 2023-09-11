@@ -5,15 +5,13 @@ import javax.swing.*;
 /*
 To Do List:
 calculate cuts button interactivity
-part display (right side)
-Stock Display (right side)
-window resizing compatibility
+make it so pressing tab cycles to the next text box
+window resizing compatibility?
 limit framerate?
 convert to arraylists because arrays are finite in size (we will need it for output)
 */
 
 public class testui extends PApplet{
-   // private static JFrame mainWnd = null;
     double scaleFactor;
     ArrayList<Float> x = new ArrayList<Float>();//arraylists are used for output
     ArrayList<Float> y = new ArrayList<Float>();
@@ -41,23 +39,6 @@ int i=0;
     }
     @Override
     public void draw() {
-
-
-
-        //mainWnd = new JFrame();
-
-       // mainWnd.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //mainWnd.setTitle("asda");
-        //mainWnd.setBounds(50, 50, 300, 300);
-
-        //mainWnd.setResizable(true);
-        //mainWnd.setVisible(true);
-
-
-
-
-
-
         background(50);
         fill(190);
         rect(0, 0, width/3, height);//left bar background
@@ -192,9 +173,9 @@ int i=0;
         }else    text("Grain Off", 300, 50);
         //calculate button
         fill(200);
-        rect(300,600,50,50);
+        rect(300,height-75,50,50);
         fill(10);
-        text("Calculate", 300, 625);
+        text("Calculate", 300, height-50);
         if(output){//display for right side of screen
          //use stock info + arraylist values
 colorval=255*3/rows;
@@ -205,7 +186,7 @@ for(i=0;i<x.size();i++){
     if(i%3==0)    fill(colorval*((i+3)/3),0,0);//r
     if(i%3==1)    fill(0,colorval*((i+3)/3),0);//g
     if(i%3==2)    fill(0,0,colorval*((i+3)/3));//b
-    rect((float)(x.get(i)*scaleFactor)+width/3+10,(float)(y.get(i)*scaleFactor)+10,(float)(w.get(i)*scaleFactor),(float)(l.get(i)*scaleFactor));//part display
+    rect((float)(x.get(i)*scaleFactor)+(width/3)+10,(float)(y.get(i)*scaleFactor)+10,(float)(w.get(i)*scaleFactor),(float)(l.get(i)*scaleFactor));//part display
 }
         }
     	update();
@@ -250,7 +231,7 @@ if(cooldown<1&&mousePressed){//check if they clicked on a text box or if they cl
     //grain top toggle check
     if(mouseX>300&&mouseX<350&&mouseY<70&&mouseY>20) grain[8]= !grain[8];
     //calculate button (calls to the algorithm and will come through here)
-    if(mouseX>300&&mouseX<350&&mouseY<650&&mouseY>600){
+    if(mouseX>300&&mouseX<350&&mouseY<(height-25)&&mouseY>(height-75)){
         output=true;
         for(i=0;i<4;i++){//makes temporary values for stock input
             tstock[i]=Float.parseFloat(stock[i]);
