@@ -3,7 +3,7 @@
 #include "transferfunc.cpp"
 using namespace std;
 
-float call(float cut[], float stock[], int row)
+float* call(float cut[], float stock[], int row)
 {
     int i=0, alen=0;
     //int row=4;
@@ -17,6 +17,6 @@ float call(float cut[], float stock[], int row)
         cout << a[i] << endl;
     }
 
-    return 0;
+    return a;
 }
 
