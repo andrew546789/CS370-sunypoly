@@ -12,7 +12,19 @@ class box
     float width, height, posx, posy;
 };
 
-//float* cry(float[], float[], int);
+
+int totalcut(float cut[],int row)
+{
+    int i=0,num=0;
+    for(i=0;i<row*3;i++)
+    {
+        if(i%3==2)
+        {
+            num+=cut[i];
+        }
+    }
+    return num;
+}
 
 float* cry(float stock[], float cut[], int row)
 {
@@ -83,17 +95,4 @@ float* cry(float stock[], float cut[], int row)
 
 
     return out;
-}
-
-int totalcut(float cut[],int row)
-{
-    int i=0,num=0;
-    for(i=0;i<row*3;i++)
-    {
-        if(i%3==2)
-        {
-            num+=cut[i];
-        }
-    }
-    return num;
 }
