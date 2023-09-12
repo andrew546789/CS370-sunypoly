@@ -12,13 +12,15 @@ convert to arraylists because arrays are finite in size (we will need it for out
 */
 
 public class testui extends PApplet{
+    float tempstock[] = {0,0,0,0};
+    float temptxt[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     double scaleFactor;
     ArrayList<Float> x = new ArrayList<Float>();//arraylists are used for output
     ArrayList<Float> y = new ArrayList<Float>();
     ArrayList<Float> w = new ArrayList<Float>();
     ArrayList<Float> l = new ArrayList<Float>();
     boolean output=false;//if the calculate button has been pressed this will be true and output will stay on screen until calc is clicked again
-int rows=7;
+int rows=4;
 int colorval=0;
 Boolean grain[]= {false,false,false,false,false,false,false,false,false};//x9 false=horizontal grain[7]=stock grain[8]=t/f if grain direction matters
 Boolean box[]= {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};//x21 
@@ -236,21 +238,23 @@ if(cooldown<1&&mousePressed){//check if they clicked on a text box or if they cl
         for(i=0;i<4;i++){//makes temporary values for stock input
             tstock[i]=Float.parseFloat(stock[i]);
         }
-
-        //feed inputs to c
-//new testui().kms(txt[],rows,stock[],grain[]);
-
-
-
         x.clear();
         y.clear();
         w.clear();
         l.clear();
-        for(i=0;i<rows;i++) {
-            x.add((float) Float.parseFloat(txt[3*i])*i+10+Float.parseFloat(stock[3]));//adding test output because the algorithm isnt implemented
-            y.add((float) 10);
-            w.add((float) Float.parseFloat(txt[3*i]));
-            l.add((float) Float.parseFloat(txt[3*i+1]));
+        func meth=new func();
+        for (i=0;i<rows;i++){//convert data from string to float for algorithm
+            tempstock[i]=Float.parseFloat(stock[i]);
+            temptxt[3*i]=Float.parseFloat(txt[3*i]);
+            temptxt[3*i+1]=Float.parseFloat(txt[3*i+1]);
+            temptxt[3*i+2]=Float.parseFloat(txt[3*i+2]);
+        }
+        float crying[] = meth.cry(tempstock,temptxt,rows);//imput from algorithm to a float[] (totally could use this instead of arraylist)
+        for(i=0;i<(crying.length/4);i++) {//convert to arraylist
+            w.add((float) crying[4*i]);
+            l.add((float) crying[4*i+1]);
+            x.add((float) crying[4*i+2]);
+            y.add((float) crying[4*i+3]);
         }
     }
 }
@@ -306,4 +310,83 @@ if (keyPressed&&cooldown<1) {
 	}
 cooldown-=1;
 }
+}// end of ui stuff
+class func
+{
+    public static int totalcut(float[] cut, int row)
+    {
+        int num = 0;
+        for (int i = 0; i < row * 3; i++)
+        {
+            if (i % 3 == 2) {
+                num += cut[i];
+            }
+        }
+        return num;
+    }
+
+    public static float[] cry(float[] stock, float[] cut, int row)
+    {
+        int tempj = 0;
+        int num = totalcut(cut, row);
+        Box[] obj = new Box[num];
+        int temps = num * 4;
+        float[] out = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+
+        for (int i = 0; i < row * 3; i++)
+        {
+            if (i % 3 == 0)
+            {
+                int j;
+                for (j = 0; j < cut[i + 2]; j++)
+                {
+                    obj[j + tempj] = new Box(cut[i], cut[i + 1]);
+                }
+                tempj += j;
+            }
+        }
+        obj[0].posx = 0;
+        obj[0].posy = 0;
+        float tempx = 0;
+
+        for (int i = 1; i < num; i++)
+        {
+            if ((obj[i].height + obj[i - 1].height + obj[i - 1].posy) <= stock[1])
+            {
+                obj[i].posy = obj[i - 1].height + obj[i - 1].posy;
+                obj[i].posx = tempx;
+            } else if ((obj[i].width + obj[i - 1].width + obj[i - 1].posx) <= stock[0])
+            {
+                obj[i].posx = obj[i - 1].width + obj[i - 1].posx;
+                obj[i].posy = 0;
+                tempx = obj[i].posx;
+            } else
+            {
+                System.out.println("cant fit");
+                break;
+            }
+        }
+
+
+
+        for(int i=0;i<num;i++)
+        {
+            out[4*i]=obj[i].width;
+            out[4*i+1]=obj[i].height;
+            out[4*i+2]=obj[i].posx;
+            out[4*i+3]=obj[i].posy;
+        }
+
+
+        return out;
+    }
+}
+
+class Box {
+    float width, height, posx, posy;
+
+    public Box(float width, float height) {
+        this.width = width;
+        this.height = height;
+    }
 }
