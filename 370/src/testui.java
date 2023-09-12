@@ -22,8 +22,8 @@ int rows=7;
 int colorval=0;
 Boolean grain[]= {false,false,false,false,false,false,false,false,false};//x9 false=horizontal grain[7]=stock grain[8]=t/f if grain direction matters
 Boolean box[]= {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};//x21 
-String	txt[]= {"w","h","q","","","","","","","","","","","","","","","","","",""};//x21
-String stock[]= {"w","h","q","cutwidth"};
+String	txt[]= {"5","5","1","5","5","1","5","5","1","5","5","1","5","5","1","5","5","1","5","5","1"};//x21
+String stock[]= {"60","60","2","0.125"};
 Float tstock[]={(float)0,(float)0,(float)0,(float)0};
 Boolean Stockbox[]= {false,false,false,false};
 int cooldown=0;//frames b4 another input is processed
@@ -178,16 +178,16 @@ int i=0;
         text("Calculate", 300, height-50);
         if(output){//display for right side of screen
          //use stock info + arraylist values
-colorval=255*3/rows;
+colorval=360/rows;//fix this later with numpart instead of rows
             scaleFactor = (Math.min(1.0 * width*2/3 / tstock[0], 1.0 * height / tstock[1])) * 0.8;//stock scaling mult
 fill(200);
 rect((float)(width/3)+10,(float)10, (float)(tstock[0]*scaleFactor),(float)(tstock[1]*scaleFactor));// stock display
+            colorMode(HSB, 360, 100, 100);//changing colormode for part display
 for(i=0;i<x.size();i++){
-    if(i%3==0)    fill(colorval*((i+3)/3),0,0);//r
-    if(i%3==1)    fill(0,colorval*((i+3)/3),0);//g
-    if(i%3==2)    fill(0,0,colorval*((i+3)/3));//b
+       fill(colorval*i,100,100);
     rect((float)(x.get(i)*scaleFactor)+(width/3)+10,(float)(y.get(i)*scaleFactor)+10,(float)(w.get(i)*scaleFactor),(float)(l.get(i)*scaleFactor));//part display
 }
+            colorMode(RGB, 255, 255, 255);//fixing colormode after im done with hue stuff
         }
     	update();
     }
@@ -247,10 +247,10 @@ if(cooldown<1&&mousePressed){//check if they clicked on a text box or if they cl
         w.clear();
         l.clear();
         for(i=0;i<rows;i++) {
-            x.add((float) 10+20*i);//adding test output because the algorithm isnt implemented
-            y.add((float) 10+5*i);
-            w.add((float) 10);
-            l.add((float) 10+10*i);
+            x.add((float) Float.parseFloat(txt[3*i])*i+10+Float.parseFloat(stock[3]));//adding test output because the algorithm isnt implemented
+            y.add((float) 10);
+            w.add((float) Float.parseFloat(txt[3*i]));
+            l.add((float) Float.parseFloat(txt[3*i+1]));
         }
     }
 }
