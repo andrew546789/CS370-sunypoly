@@ -4,7 +4,6 @@ import javax.swing.*;
 
 /*
 To Do List:
-calculate cuts button interactivity
 make it so pressing tab cycles to the next text box
 window resizing compatibility?
 limit framerate?
