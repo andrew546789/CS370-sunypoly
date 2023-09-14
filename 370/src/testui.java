@@ -23,7 +23,7 @@ public class testui extends PApplet{
 int rows=4;
 int colorval=0;
 Boolean grain[]= {false,false,false,false,false,false,false,false,false};//x9 false=horizontal grain[7]=stock grain[8]=t/f if grain direction matters
-Boolean box[]= {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};//x21 
+Boolean box[]= {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};//x21
 String	txt[]= {"5","5","1","5","5","1","5","5","1","5","5","1","5","5","1","5","5","1","5","5","1"};//x21
 String stock[]= {"60","60","2","0.125"};
 Float tstock[]={(float)0,(float)0,(float)0,(float)0};
@@ -31,10 +31,6 @@ Boolean Stockbox[]= {false,false,false,false};
 int cooldown=0;//frames b4 another input is processed
 int selectedboxcolor=250;
 int i=0;
-//public native void cry();
-  //  {
-    //    System.loadLibrary("kms");
-    //}
     @Override
     public void settings() {
         size(1200, 675);//sets window size (will effect other display elements) normally 1200/675
@@ -331,7 +327,7 @@ class func
         int num = totalcut(cut, row);
         Box[] obj = new Box[num];
         int temps = num * 4;
-        float[] out = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+        float[] out = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
         for (int i = 0; i < row * 3; i++)
         {
