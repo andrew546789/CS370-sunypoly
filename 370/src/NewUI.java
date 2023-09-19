@@ -126,7 +126,9 @@ public class NewUI {
 
         public RectangleInputPanel(int number) {
             this.rectangleNumber = number;
-            setLayout(new GridLayout(1, 5));
+            //setLayout(new GridLayout(1, 5));
+
+            frame.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 25));
             setBorder(BorderFactory.createTitledBorder("Rectangle " + number));
 
             heightField = new JTextField();
@@ -140,6 +142,7 @@ public class NewUI {
             add(new JLabel("Qty:"));
             add(quantityField);
 
+            widthField.setPreferredSize(new Dimension(40, 25));
             heightField.setPreferredSize(new Dimension(40, 25));
             quantityField.setPreferredSize(new Dimension(40, 25));
         }
