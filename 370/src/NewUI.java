@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NewUI {
+    //
     private JFrame frame;
     private JPanel inputPanel;
     private JPanel displayPanel;
