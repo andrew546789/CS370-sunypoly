@@ -2,93 +2,145 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
-public class StockRectangleCreator extends JFrame { // we need to steal the resizing of the window
-    //and resizing of the rectangle(stock) for our main program.
+class NewUI2{
+    private JFrame frame;
+    private JPanel inputPanel;
+    private JPanel buttonPanel;
+    private JPanel displayPanel;
+    private JButton addButton;
+    private JButton drawButton;
+    private JButton eraseButton;
+    private List<RectangleInputPanel> rectangleInputPanels = new ArrayList<>();
 
-    private JPanel inputPanel; // Panel for user input
-    private JPanel drawingPanel; // Panel for displaying the rectangle
-    private int width;
-    private int height;
-    private double scaleFactor = 0.8; // Default scale factor
+    public NewUI2() {
+        frame = new JFrame("Multiple Rectangle Drawer");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 400);
 
-    public StockRectangleCreator() {
-        setTitle("Stock Creator");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 400); // Increased the window width to accommodate both panels
-
-        // Create a panel for user input on the left side
         inputPanel = new JPanel();
-        inputPanel.setLayout(new GridLayout(3, 2)); // Using a grid layout for input fields
-        getContentPane().add(inputPanel, BorderLayout.WEST);
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
 
-        JLabel widthLabel = new JLabel("Enter width:");
-        JTextField widthTextField = new JTextField(10);
-        JLabel heightLabel = new JLabel("Enter height:");
-        JTextField heightTextField = new JTextField(10);
-        JButton createButton = new JButton("Create Rectangle");
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Use FlowLayout for buttons
+        addButton = new JButton("Add Rectangle Input");
+        drawButton = new JButton("Draw Rectangles");
+        eraseButton = new JButton("Erase Rectangles");
 
-        inputPanel.add(widthLabel);
-        inputPanel.add(widthTextField);
-        inputPanel.add(heightLabel);
-        inputPanel.add(heightTextField);
-        inputPanel.add(createButton);
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addRectangleInputPanel();
+            }
+        });
 
-        // Create a panel for displaying the rectangle on the right side
-        drawingPanel = new JPanel() {
+        drawButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayPanel.repaint();
+            }
+        });
+
+        eraseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearRectangles();
+            }
+        });
+
+        buttonPanel.add(addButton);
+        buttonPanel.add(drawButton);
+        buttonPanel.add(eraseButton);
+
+        displayPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(Color.LIGHT_GRAY);
-
-                // Calculate scaled width and height
-                int scaledWidth = (int) (width * scaleFactor);
-                int scaledHeight = (int) (height * scaleFactor);
-
-                // Calculate the position to center the rectangle
-                int x = (getWidth() - scaledWidth) / 2;
-                int y = (getHeight() - scaledHeight) / 2;
-
-                // Draw the rectangle
-                g.fillRect(x, y, scaledWidth, scaledHeight);
-
-                // Draw width label horizontally
-                g.setColor(Color.BLACK);
-                String widthLabel = "Width: " + width;
-                g.drawString(widthLabel, x + 10, y - 10);
-
-                // Draw height label vertically
-                Graphics2D g2d = (Graphics2D) g.create();
-                g2d.rotate(-Math.PI / 2); // Rotate 90 degrees counterclockwise
-                String heightLabel = "Height: " + height;
-                g2d.drawString(heightLabel, -y - scaledHeight - 10, x - 5);
-                g2d.dispose();
+                drawRectangles(g);
             }
         };
-        getContentPane().add(drawingPanel, BorderLayout.CENTER);
 
-        createButton.addActionListener(new ActionListener() {
+        inputPanel.add(buttonPanel); // Add the button panel at the top
+        frame.add(inputPanel, BorderLayout.WEST);
+        frame.add(new JScrollPane(displayPanel), BorderLayout.CENTER);
+        frame.setVisible(true);
+    }
+
+    private void addRectangleInputPanel() {
+        RectangleInputPanel rectangleInputPanel = new RectangleInputPanel(rectangleInputPanels.size() + 1);
+        rectangleInputPanels.add(rectangleInputPanel);
+        inputPanel.add(rectangleInputPanel);
+        inputPanel.revalidate();
+    }
+
+    private void drawRectangles(Graphics g) {
+        for (RectangleInputPanel inputPanel : rectangleInputPanels) {
+            inputPanel.drawRectangle(g);
+        }
+    }
+
+    private void clearRectangles() {
+        rectangleInputPanels.clear();
+        inputPanel.removeAll();
+        inputPanel.revalidate();
+        inputPanel.repaint();
+        displayPanel.repaint();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    width = Integer.parseInt(widthTextField.getText());
-                    height = Integer.parseInt(heightTextField.getText());
-
-                    // Adjust the scaleFactor based on the size of the rectangle
-                    scaleFactor = (Math.min(1.0 * drawingPanel.getWidth() / width, 1.0 * drawingPanel.getHeight() / height)) * 0.8;
-
-                    drawingPanel.repaint();
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(StockRectangleCreator.this, "Please enter valid width and height values.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+            public void run() {
+                new NewUI2();
             }
         });
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            StockRectangleCreator rectangleCreator = new StockRectangleCreator();
-            rectangleCreator.setVisible(true);
-        });
+    private class RectangleInputPanel extends JPanel {
+        private JTextField heightField;
+        private JTextField widthField;
+        private JTextField quantityField;
+        private int rectangleNumber;
+
+        public RectangleInputPanel(int number) {
+            this.rectangleNumber = number;
+            setLayout(new GridLayout(1, 5));
+            setBorder(BorderFactory.createTitledBorder("Rectangle " + number));
+
+            heightField = new JTextField();
+            widthField = new JTextField();
+            quantityField = new JTextField();
+
+            add(new JLabel("H:"));
+            add(heightField);
+            add(new JLabel("W:"));
+            add(widthField);
+            add(new JLabel("Qty:"));
+            add(quantityField);
+
+            heightField.setPreferredSize(new Dimension(40, 25));
+            quantityField.setPreferredSize(new Dimension(40, 25));
+        }
+
+        public void drawRectangle(Graphics g) {
+            String heightStr = heightField.getText();
+            String widthStr = widthField.getText();
+            String quantityStr = quantityField.getText();
+
+            try {
+                int height = Integer.parseInt(heightStr);
+                int width = Integer.parseInt(widthStr);
+                int quantity = Integer.parseInt(quantityStr);
+
+                for (int i = 0; i < quantity; i++) {
+                    int x = 50 + i * (width + 10);
+                    int y = 50 + rectangleNumber * 100;
+                    g.drawRect(x, y, width, height);
+                }
+            } catch (NumberFormatException e) {
+                // Handle invalid input
+            }
+        }
     }
 }
