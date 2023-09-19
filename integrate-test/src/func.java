@@ -59,7 +59,7 @@ class func
     }
     
     //checks collision of the box about to be placed
-    boolean checkcoll(int x, ArrayList<Box> barr)
+    public boolean checkcoll(int x, ArrayList<Box> barr)
 	{
     	//out is the output variable
     	boolean out = true;
@@ -91,6 +91,36 @@ class func
     	}
 		return out;
 	}
+    
+    //bubble sort to organize by height
+    public void heightsort(ArrayList<Box> barr)
+    {
+    	// x is to limit the size
+    	int x = barr.size();
+    	boolean done;
+    	
+    	do
+    	{
+    		// aslong as the if statement in the recursive statement occurs
+    		// because of the done boolean it will keep iterating 
+    		// each full iteration thru the data sets doesnt need to check the last number 
+    		//since the biggest numbers should be slid to the end
+    		done = false;
+    		for(int i=0;i<x-1;i++)
+    		{
+    			if(barr.get(i).getheight() > barr.get(i+1).getheight())
+    			{
+    				Box temp = barr.get(i);
+    				barr.set(i, barr.get(i+1));
+    				barr.set(i+1,temp);
+    				done=true;
+    			}
+    			
+    		}
+    		x--;
+    	}
+    	while(done);
+    }
 }
 
 
