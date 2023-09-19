@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultipleRectangleDrawerApp {
+public class NewUI {
     private JFrame frame;
     private JPanel inputPanel;
     private JPanel displayPanel;
@@ -14,7 +14,7 @@ public class MultipleRectangleDrawerApp {
     private JButton eraseButton; // New button for erasing rectangles
     private List<RectangleInputPanel> rectangleInputPanels = new ArrayList<>();
 
-    public MultipleRectangleDrawerApp() {
+    public NewUI() {
         frame = new JFrame("Multiple Rectangle Drawer");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 400);
@@ -88,7 +88,7 @@ public class MultipleRectangleDrawerApp {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new MultipleRectangleDrawerApp();
+                new NewUI();
             }
         });
     }
