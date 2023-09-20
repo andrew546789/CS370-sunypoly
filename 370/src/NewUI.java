@@ -27,7 +27,7 @@ public class NewUI {
 
         // Create a sub-panel for buttons with a horizontal FlowLayout
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Arrange buttons from left to right
-
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Arrange buttons from left to right
         // Create buttons and set their preferred sizes
         addButton = new JButton("Add");
         eraseButton = new JButton("Remove");
@@ -77,7 +77,7 @@ public class NewUI {
 
         // Add input panel to the left side of the main frame and display panel to the center
         frame.add(inputPanel, BorderLayout.WEST);
-        frame.add(new JScrollPane(displayPanel), BorderLayout.CENTER);
+        frame.add(new JScrollPane(displayPanel), BorderLayout.EAST);
 
         // Make the frame visible
         frame.setVisible(true);
@@ -100,11 +100,13 @@ public class NewUI {
 
     // Method to clear all rectangles and input panels
     private void clearRectangles() {
-        rectangleInputPanels.clear();
-        inputPanel.removeAll();
-        inputPanel.revalidate();
-        inputPanel.repaint();
-        displayPanel.repaint();
+        if (!rectangleInputPanels.isEmpty()) {
+            rectangleInputPanels.remove(rectangleInputPanels.size() - 1);
+            inputPanel.remove(inputPanel.getComponentCount()-1);
+            inputPanel.revalidate();
+            inputPanel.repaint();
+            displayPanel.repaint();
+        }
     }
 
     // Main method to create and run the UI
@@ -142,6 +144,7 @@ public class NewUI {
             add(new JLabel("Qty:"));
             add(quantityField);
 
+            displayPanel.setPreferredSize(new Dimension(5000,5000));
             widthField.setPreferredSize(new Dimension(40, 25));
             heightField.setPreferredSize(new Dimension(40, 25));
             quantityField.setPreferredSize(new Dimension(40, 25));
