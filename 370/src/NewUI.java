@@ -19,15 +19,11 @@ public class NewUI {
         // Create the main frame
         frame = new JFrame("Multiple Rectangle Drawer");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 400);
-
-        // Create the main input panel with a vertical BoxLayout
-        inputPanel = new JPanel();
-        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+        frame.setSize(900, 400); // Adjusted frame width
 
         // Create a sub-panel for buttons with a horizontal FlowLayout
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Arrange buttons from left to right
-        buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Arrange buttons from left to right
+
         // Create buttons and set their preferred sizes
         addButton = new JButton("Add");
         eraseButton = new JButton("Remove");
@@ -72,12 +68,28 @@ public class NewUI {
             }
         };
 
+        // Create the main input panel with a vertical BoxLayout
+        inputPanel = new JPanel();
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+
         // Add the button panel at the top of the input panel
         inputPanel.add(buttonPanel);
 
+        // Wrap the inputPanel in a JScrollPane and set its preferred size
+        JScrollPane inputScrollPane = new JScrollPane(inputPanel);
+        inputScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        inputScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Remove horizontal scrollbar
+        inputScrollPane.setPreferredSize(new Dimension(380, frame.getHeight())); // Adjusted preferred width
+
+        // Wrap the displayPanel in a JScrollPane and set its preferred size
+        JScrollPane displayScrollPane = new JScrollPane(displayPanel);
+        displayScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        displayScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Remove horizontal scrollbar
+        displayScrollPane.setPreferredSize(new Dimension(500, 500));
+
         // Add input panel to the left side of the main frame and display panel to the center
-        frame.add(inputPanel, BorderLayout.WEST);
-        frame.add(new JScrollPane(displayPanel), BorderLayout.EAST);
+        frame.add(inputScrollPane, BorderLayout.WEST);
+        frame.add(displayScrollPane, BorderLayout.CENTER);
 
         // Make the frame visible
         frame.setVisible(true);
@@ -102,7 +114,7 @@ public class NewUI {
     private void clearRectangles() {
         if (!rectangleInputPanels.isEmpty()) {
             rectangleInputPanels.remove(rectangleInputPanels.size() - 1);
-            inputPanel.remove(inputPanel.getComponentCount()-1);
+            inputPanel.remove(inputPanel.getComponentCount() - 1);
             inputPanel.revalidate();
             inputPanel.repaint();
             displayPanel.repaint();
@@ -128,9 +140,6 @@ public class NewUI {
 
         public RectangleInputPanel(int number) {
             this.rectangleNumber = number;
-            //setLayout(new GridLayout(1, 5));
-
-            frame.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 25));
             setBorder(BorderFactory.createTitledBorder("Rectangle " + number));
 
             heightField = new JTextField();
@@ -144,7 +153,6 @@ public class NewUI {
             add(new JLabel("Qty:"));
             add(quantityField);
 
-            displayPanel.setPreferredSize(new Dimension(5000,5000));
             widthField.setPreferredSize(new Dimension(40, 25));
             heightField.setPreferredSize(new Dimension(40, 25));
             quantityField.setPreferredSize(new Dimension(40, 25));
