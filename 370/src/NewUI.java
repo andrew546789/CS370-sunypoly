@@ -17,7 +17,7 @@ public class NewUI {
 
     public NewUI() {
         // Create the main frame
-        frame = new JFrame("Multiple Rectangle Drawer");
+        frame = new JFrame("Cut List Helper");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(900, 400); // Adjusted frame width
 
@@ -140,7 +140,7 @@ public class NewUI {
 
         public RectangleInputPanel(int number) {
             this.rectangleNumber = number;
-            setBorder(BorderFactory.createTitledBorder("Rectangle " + number));
+            setBorder(BorderFactory.createTitledBorder("Part " + number));
 
             heightField = new JTextField();
             widthField = new JTextField();
