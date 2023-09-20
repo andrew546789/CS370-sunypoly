@@ -23,7 +23,6 @@ public class NewUI {
 
         // Create a sub-panel for buttons with a horizontal FlowLayout
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Arrange buttons from left to right
-
         // Create buttons and set their preferred sizes
         addButton = new JButton("Add");
         eraseButton = new JButton("Remove");
@@ -105,6 +104,9 @@ public class NewUI {
 
     // Method to draw rectangles on the display panel
     private void drawRectangles(Graphics g) {
+        for (RectangleInputPanel inputPanel : rectangleInputPanels) {//look through all the data
+            inputPanel.feedRectangle(g);
+        }
         for (RectangleInputPanel inputPanel : rectangleInputPanels) {
             inputPanel.drawRectangle(g);
         }
@@ -140,8 +142,11 @@ public class NewUI {
 
         public RectangleInputPanel(int number) {
             this.rectangleNumber = number;
-            setBorder(BorderFactory.createTitledBorder("Part " + number));
-
+            if(number==1){
+                setBorder(BorderFactory.createTitledBorder("Stock"));
+            }else {
+                setBorder(BorderFactory.createTitledBorder("Part " + (number - 1)));
+            }
             heightField = new JTextField();
             widthField = new JTextField();
             quantityField = new JTextField();
@@ -159,7 +164,7 @@ public class NewUI {
         }
 
         // Method to draw a rectangle based on user input
-        public void drawRectangle(Graphics g) {
+        public void drawRectangle(Graphics g) {//currently gets called once per row, but once algorithm is in we might use it differently
             String heightStr = heightField.getText();
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
@@ -174,6 +179,21 @@ public class NewUI {
                     int y = 50 + rectangleNumber * 100;
                     g.drawRect(x, y, width, height);
                 }
+            } catch (NumberFormatException e) {
+                // Handle invalid input
+            }
+        }
+        public void feedRectangle(Graphics g) {
+            String heightStr = heightField.getText();
+            String widthStr = widthField.getText();
+            String quantityStr = quantityField.getText();
+            try {
+                int height = Integer.parseInt(heightStr);
+                int width = Integer.parseInt(widthStr);
+                int quantity = Integer.parseInt(quantityStr);
+                //either fill a arraylist or input into algorithm here:
+
+
             } catch (NumberFormatException e) {
                 // Handle invalid input
             }
