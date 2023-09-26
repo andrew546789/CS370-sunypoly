@@ -82,6 +82,7 @@ class FFDH {
                 boxes.get(i).setPosx(boxes.get(i - 1).getWidth());
                 boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
             } else {
+                // If new level: reset x pos to 0, set the y pos to the temp tallest, set temp tallest to current length and pos y
                 boxes.get(i).setPosx(0);
                 boxes.get(i).setPosy(tempTallest);
                 tempTallest = boxes.get(i).getLength() + boxes.get(i).getPosy();
@@ -93,8 +94,6 @@ class FFDH {
 
     public static void printBoxes(ArrayList<Box2> boxes, float boardWidth) {
         int i;
-
-        System.out.println("board width: " + boardWidth);
 
         // Iterate through every box to print their respective values
         for(i = 0; i < boxes.size(); i++) {
@@ -119,7 +118,6 @@ class FFDH {
         sqrs.add(new Box2(5, 1, 0, 0));
         sqrs.add(new Box2(7, 6, 0, 0));
         sqrs.add(new Box2(1, 3, 0, 0));
-
 
 /*
         //create 5 boxes with random values
