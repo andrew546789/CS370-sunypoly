@@ -71,7 +71,7 @@ class FFDH {
         return boxes;
     }
 
-    public static ArrayList<Box2> findBoxesPositions(ArrayList<Box2> boxes) {
+    public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes) {
         int i = 0;
         float tempTallest = boxes.get(0).getLength();
 
@@ -132,7 +132,7 @@ class FFDH {
         System.out.println("---------------------");
 
         setBoxesLevels(sqrs, boardWidth);
-        findBoxesPositions(sqrs);
+        setBoxesPositions(sqrs);
 
         printBoxes(sqrs, boardWidth);
     }
