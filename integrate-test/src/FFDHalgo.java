@@ -56,6 +56,9 @@ class FFDH {
         // Get ordered boxes
         boxes = simpleBoxSort(boxes);
 
+        // Add the first box to the running width
+        runningWidths[level] += boxes.get(0).getWidth();
+
         // Go through every box
         for(i = 1; i < boxes.size(); i++) {
             if((runningWidths[level] + boxes.get(i).getWidth()) > boardWidth) {
@@ -107,17 +110,17 @@ class FFDH {
     public static void main(String[] args) {
         Random rand = new Random();
         int i = 0;
-        float boardWidth = 10;
+        float boardWidth = 1000;
         ArrayList<Box2> sqrs = new ArrayList<>();
 
         // Add the board as the first object
         //sqrs.add(new Box2(50, 50, 0, 0));
 
-        sqrs.add(new Box2(6, 3, 0, 0));
-        sqrs.add(new Box2(3, 9, 0, 0));
-        sqrs.add(new Box2(5, 1, 0, 0));
-        sqrs.add(new Box2(7, 6, 0, 0));
-        sqrs.add(new Box2(1, 3, 0, 0));
+        sqrs.add(new Box2(60, 3, 0, 0));
+        sqrs.add(new Box2(30, 9, 0, 0));
+        sqrs.add(new Box2(50, 1, 0, 0));
+        sqrs.add(new Box2(70, 6, 0, 0));
+        sqrs.add(new Box2(10, 3, 0, 0));
 
 /*
         //create 5 boxes with random values
