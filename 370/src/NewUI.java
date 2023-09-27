@@ -21,6 +21,23 @@ public class NewUI {
     int rows=0;//yellow
     ArrayList<Float> stock = new ArrayList<Float>();
     ArrayList<Box2> BOX = new ArrayList<Box2>();
+    // Add the generateColorPalette method
+    private Color[] generateColorPalette(int numColors) {
+        Color[] palette = new Color[numColors];
+        float saturation = 1.0f;
+        float brightness = 1.0f;
+
+        for (int i = 0; i < numColors; i++) {
+            float hue = (float) i / numColors;
+            palette[i] = Color.getHSBColor(hue, saturation, brightness);
+        }
+
+        return palette;
+    }
+
+    // Create a private field to store the generated color palette
+    private Color[] partColors;
+
     public NewUI() {
         // Create the main frame
         frame = new JFrame("Cut List Helper");
@@ -36,7 +53,8 @@ public class NewUI {
         addButton.setPreferredSize(new Dimension(120, 30)); // Set button size
         drawButton.setPreferredSize(new Dimension(120, 30)); // Set button size
         eraseButton.setPreferredSize(new Dimension(120, 30)); // Set button size
-
+        // Initialize the color palette with 10 colors
+        partColors = generateColorPalette(10);
         // Add action listeners to buttons
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -187,8 +205,10 @@ public class NewUI {
                 Graphics2D g2d = (Graphics2D)g.create();
                 g2d.draw(rect);
 
-                for(int i=0;i<BOX.size();i++) {
-                    g.drawRect((int) BOX.get(i).getPosx(), (int) BOX.get(i).getPosy(), (int) BOX.get(i).getWidth(), (int) BOX.get(i).getLength());
+                for (int i = 0; i < BOX.size(); i++) {
+                    g.setColor(partColors[rectangleNumber - 1]); // Use color from the palette
+                    g.fillRect((int) BOX.get(i).getPosx(), (int) BOX.get(i).getPosy(),
+                            (int) BOX.get(i).getWidth(), (int) BOX.get(i).getLength()); // Fill the box with color
                 }
             } catch (NumberFormatException e) {
                 // Handle invalid input
