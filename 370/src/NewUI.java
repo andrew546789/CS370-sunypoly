@@ -2,8 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Rectangle2D;//thing for making float rectangles
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.reflect.Array;
+import java.util.*;
+import static java.lang.Math.abs;
 
 public class NewUI {
     private JFrame frame;
@@ -14,7 +18,9 @@ public class NewUI {
     private JButton drawButton;
     private JButton eraseButton;
     private List<RectangleInputPanel> rectangleInputPanels = new ArrayList<>();
-
+    int rows=0;
+    ArrayList<Float> stock = new ArrayList<Float>();
+    ArrayList<Box2> BOX = new ArrayList<Box2>();
     public NewUI() {
         // Create the main frame
         frame = new JFrame("Cut List Helper");
@@ -73,7 +79,6 @@ public class NewUI {
 
         // Add the button panel at the top of the input panel
         inputPanel.add(buttonPanel);
-
         // Wrap the inputPanel in a JScrollPane and set its preferred size
         JScrollPane inputScrollPane = new JScrollPane(inputPanel);
         inputScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -104,11 +109,16 @@ public class NewUI {
 
     // Method to draw rectangles on the display panel
     private void drawRectangles(Graphics g) {
+        //set height,width,quantity arrays to null
+        rows=0;
+        stock.clear();
+        BOX.clear();
         for (RectangleInputPanel inputPanel : rectangleInputPanels) {//look through all the data
             inputPanel.feedRectangle(g);
+            rows++;
         }
         for (RectangleInputPanel inputPanel : rectangleInputPanels) {
-            inputPanel.drawRectangle(g);
+            inputPanel.drawRectangle(g);//l8r this will only get called once ideally
         }
     }
 
@@ -170,14 +180,15 @@ public class NewUI {
             String quantityStr = quantityField.getText();
 
             try {
-                int height = Integer.parseInt(heightStr);
-                int width = Integer.parseInt(widthStr);
-                int quantity = Integer.parseInt(quantityStr);
+                FFDH.setBoxesLevels(BOX, stock.get(0));
+                FFDH.setBoxesPositions(BOX);
 
-                for (int i = 0; i < quantity; i++) {
-                    int x = 50 + i * (width + 10);
-                    int y = 50 + rectangleNumber * 100;
-                    g.drawRect(x, y, width, height);
+                Rectangle2D.Double rect = new Rectangle2D.Double(0, 0, stock.get(0), stock.get(1));
+                Graphics2D g2d = (Graphics2D)g.create();
+                g2d.draw(rect);
+
+                for(int i=0;i<BOX.size();i++) {
+                    g.drawRect((int) BOX.get(i).getPosx(), (int) BOX.get(i).getPosy(), (int) BOX.get(i).getWidth(), (int) BOX.get(i).getLength());
                 }
             } catch (NumberFormatException e) {
                 // Handle invalid input
@@ -188,15 +199,158 @@ public class NewUI {
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
             try {
-                int height = Integer.parseInt(heightStr);
-                int width = Integer.parseInt(widthStr);
-                int quantity = Integer.parseInt(quantityStr);
-                //either fill a arraylist or input into algorithm here:
 
-
+                if(rows==0) {
+                    stock.add(Float.parseFloat(heightStr));
+                    stock.add(Float.parseFloat(widthStr));
+                    stock.add(Float.parseFloat(quantityStr));
+                }else{
+                    for(int i=0;i<Integer.parseInt(quantityStr);i++) {
+                        Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0);
+                        BOX.add(a);
+                    }
+                }
             } catch (NumberFormatException e) {
                 // Handle invalid input
             }
         }
+    }
+}
+//algorithm goes below
+class Box2 {
+    private float width, length, posx, posy;
+    private int level;
+
+    public void setWidth(float width) { this.width = width; }
+    public void setLength(float length) {this.length = length; }
+    public void setPosx(float posx) { this.posx = posx; }
+    public void setPosy(float posy) { this.posy = posy; }
+    public void setLevel(int level) { this.level = level; }
+    public float getWidth() { return width; }
+    public float getLength() {return length; }
+    public float getPosx() { return posx; }
+    public float getPosy() { return posy; }
+    public int getLevel() { return level; }
+
+    public Box2(float width, float length, float posx, float posy) {
+        setWidth(width);
+        setLength(length);
+        setPosx(posx);
+        setPosy(posy);
+    }
+}
+
+class FFDH {
+    public static ArrayList<Box2> simpleBoxSort(ArrayList<Box2> boxes) {
+        boolean sorted = false;
+        int i = 0;
+
+        // Iterate through every box to sort them
+        while(!sorted) {
+            sorted = true;
+
+            for(i = 0; i < boxes.size() - 1; i++) {
+                // If the length of the current box is smaller than the length of the next box
+                if(boxes.get(i + 1).getLength() > boxes.get(i).getLength()) {
+                    Box2 tempBox = boxes.get(i + 1);
+                    boxes.set(i + 1, boxes.get(i));
+                    boxes.set(i, tempBox);
+                    sorted = false;
+                }
+            }
+        }
+
+        return boxes;
+    }
+
+    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth) {
+        float [] runningWidths = new float[boxes.size()];
+        int i, level = 0;
+
+        // Get ordered boxes
+        boxes = simpleBoxSort(boxes);
+
+        // Add the first box to the running width
+        runningWidths[level] += boxes.get(0).getWidth();
+
+        // Go through every box
+        for(i = 1; i < boxes.size(); i++) {
+            if((runningWidths[level] + boxes.get(i).getWidth()) > boardWidth) {
+                // Increase the level if the current widths of the level of the box are bigger than the boardwidth
+                level += 1;
+            }
+            // Always add to the running width
+            runningWidths[level] += boxes.get(i).getWidth();
+            // Always set the level of the box
+            boxes.get(i).setLevel(level);
+        }
+
+        return boxes;
+    }
+
+    public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes) {
+        int i = 0;
+        float tempTallest = boxes.get(0).getLength();
+
+        // Go through every box
+        for(i = 1; i < boxes.size(); i++) {
+            if(boxes.get(i).getLevel() == boxes.get(i - 1).getLevel()) {
+                // Set the x pos to the previous box's width and the y pos to the previous box's y pos if they're on the same level
+                boxes.get(i).setPosx(boxes.get(i - 1).getWidth() + boxes.get(i - 1).getPosx());
+                boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
+            } else {
+                // If new level: reset x pos to 0, set the y pos to the temp tallest, set temp tallest to current length and pos y
+                boxes.get(i).setPosx(0);
+                boxes.get(i).setPosy(tempTallest);
+                tempTallest = boxes.get(i).getLength() + boxes.get(i).getPosy();
+            }
+        }
+
+        return boxes;
+    }
+
+    public static void printBoxes(ArrayList<Box2> boxes, float boardWidth) {
+        int i;
+
+        // Iterate through every box to print their respective values
+        for(i = 0; i < boxes.size(); i++) {
+            System.out.println(boxes.get(i).getWidth() + "w, " + boxes.get(i).getLength() +
+                    "l: " + boxes.get(i).getPosx() + "x, " + boxes.get(i).getPosy() + "y: " + boxes.get(i).getLevel());
+        }
+
+        return;
+    }
+
+    public static void main(String[] args) {
+        Random rand = new Random();
+        int i = 0;
+        float boardWidth = 1000;
+        ArrayList<Box2> sqrs = new ArrayList<>();
+
+        // Add the board as the first object
+        //sqrs.add(new Box2(50, 50, 0, 0));
+
+        sqrs.add(new Box2(60, 3, 0, 0));
+        sqrs.add(new Box2(30, 9, 0, 0));
+        sqrs.add(new Box2(50, 1, 0, 0));
+        sqrs.add(new Box2(70, 6, 0, 0));
+        sqrs.add(new Box2(10, 3, 0, 0));
+
+/*
+        //create 5 boxes with random values
+        for (i = 0; i < 5; i++) {
+            sqrs.add(new Box2(rand.nextInt(10), rand.nextInt(10), 0, 0));
+        }
+*/
+
+        // Print boxes values
+        printBoxes(sqrs, boardWidth);
+
+        System.out.println("---------------------");
+
+        setBoxesLevels(sqrs, boardWidth);
+        setBoxesPositions(sqrs);
+
+        printBoxes(sqrs, boardWidth);
     }
 }

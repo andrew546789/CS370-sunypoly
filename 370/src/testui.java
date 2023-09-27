@@ -9,7 +9,7 @@ window resizing compatibility?
 limit framerate?
 convert to arraylists because arrays are finite in size (we will need it for output)
 */
-
+/*
 public class testui extends PApplet{
     float tempstock[] = {0,0,0,0};
     float temptxt[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -385,3 +385,4 @@ class Box {
         this.height = height;
     }
 }
+ */
