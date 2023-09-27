@@ -79,7 +79,7 @@ class FFDH {
         for(i = 1; i < boxes.size(); i++) {
             if(boxes.get(i).getLevel() == boxes.get(i - 1).getLevel()) {
                 // Set the x pos to the previous box's width and the y pos to the previous box's y pos if they're on the same level
-                boxes.get(i).setPosx(boxes.get(i - 1).getWidth());
+                boxes.get(i).setPosx(boxes.get(i - 1).getWidth() + boxes.get(i - 1).getPosx());
                 boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
             } else {
                 // If new level: reset x pos to 0, set the y pos to the temp tallest, set temp tallest to current length and pos y
