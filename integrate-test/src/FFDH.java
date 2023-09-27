@@ -81,7 +81,7 @@ class FFDH {
                 // Set the x pos to the previous box's width and the y pos to the previous box's y pos if they're on the same level
                 boxes.get(i).setPosx(boxes.get(i - 1).getWidth());
                 boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
-            } else if(boxes.get(i).getLength() + boxes.get(i).getPosy() < boardheight){
+            } else if(boxes.get(i).getLength() + boxes.get(i).getPosy() <= boardheight){
                 // If new level: reset x pos to 0, set the y pos to the temp tallest, set temp tallest to current length and pos y
                 boxes.get(i).setPosx(0);
                 boxes.get(i).setPosy(tempTallest);
