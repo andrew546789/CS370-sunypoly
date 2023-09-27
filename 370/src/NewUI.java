@@ -18,7 +18,7 @@ public class NewUI {
     private JButton drawButton;
     private JButton eraseButton;
     private List<RectangleInputPanel> rectangleInputPanels = new ArrayList<>();
-    int rows=0;
+    int rows=0;//yellow
     ArrayList<Float> stock = new ArrayList<Float>();
     ArrayList<Box2> BOX = new ArrayList<Box2>();
     public NewUI() {
