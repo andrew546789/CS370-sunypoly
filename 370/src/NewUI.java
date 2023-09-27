@@ -196,7 +196,7 @@ public class NewUI {
             String heightStr = heightField.getText();
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
-
+//
             try {
                 FFDH.setBoxesLevels(BOX, stock.get(0));
                 FFDH.setBoxesPositions(BOX);
