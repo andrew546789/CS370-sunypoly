@@ -9,7 +9,6 @@ import java.lang.reflect.Array;
 import java.util.*;
 import static java.lang.Math.abs;
 
-
 public class NewUI {
     private JFrame frame;
     private JPanel inputPanel; // Main panel for user inputs
@@ -25,7 +24,7 @@ public class NewUI {
     // Add the generateColorPalette method
     private Color[] generateColorPalette(int numColors) {
         Color[] palette = new Color[numColors];
-        float saturation = .75f;
+        float saturation = 1.0f;
         float brightness = 1.0f;
 
         for (int i = 0; i < numColors; i++) {
@@ -38,6 +37,7 @@ public class NewUI {
 
     // Create a private field to store the generated color palette
     private Color[] partColors;
+
     public NewUI() {
         // Create the main frame
         frame = new JFrame("Cut List Helper");
@@ -53,7 +53,8 @@ public class NewUI {
         addButton.setPreferredSize(new Dimension(120, 30)); // Set button size
         drawButton.setPreferredSize(new Dimension(120, 30)); // Set button size
         eraseButton.setPreferredSize(new Dimension(120, 30)); // Set button size
-
+        // Initialize the color palette with 10 colors
+        partColors = generateColorPalette(10);
         // Add action listeners to buttons
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -195,7 +196,7 @@ public class NewUI {
             String heightStr = heightField.getText();
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
-
+//
             try {
                 FFDH.setBoxesLevels(BOX, stock.get(0));
                 FFDH.setBoxesPositions(BOX);
@@ -204,14 +205,10 @@ public class NewUI {
                 Graphics2D g2d = (Graphics2D)g.create();
                 g2d.draw(rect);
 
-                for(int i=0;i<BOX.size();i++) {
-                    Color yes[];
-
-                    yes=generateColorPalette(rows);
-                    g.setColor(yes[BOX.get(i).getID()]);
-                    g.fillRect((int) BOX.get(i).getPosx(), (int) BOX.get(i).getPosy(), (int) BOX.get(i).getWidth(), (int) BOX.get(i).getLength());
-                    g.setColor(Color.black);
-                    g.drawRect((int) BOX.get(i).getPosx(), (int) BOX.get(i).getPosy(), (int) BOX.get(i).getWidth(), (int) BOX.get(i).getLength());
+                for (int i = 0; i < BOX.size(); i++) {
+                    g.setColor(partColors[rectangleNumber - 1]); // Use color from the palette
+                    g.fillRect((int) BOX.get(i).getPosx(), (int) BOX.get(i).getPosy(),
+                            (int) BOX.get(i).getWidth(), (int) BOX.get(i).getLength()); // Fill the box with color
                 }
             } catch (NumberFormatException e) {
                 // Handle invalid input
@@ -224,12 +221,12 @@ public class NewUI {
             try {
 
                 if(rows==0) {
-                    stock.add(Float.parseFloat(widthStr));
                     stock.add(Float.parseFloat(heightStr));
+                    stock.add(Float.parseFloat(widthStr));
                     stock.add(Float.parseFloat(quantityStr));
                 }else{
                     for(int i=0;i<Integer.parseInt(quantityStr);i++) {
-                        Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows);
+                        Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0);
                         BOX.add(a);
                     }
                 }
@@ -242,7 +239,7 @@ public class NewUI {
 //algorithm goes below
 class Box2 {
     private float width, length, posx, posy;
-    private int level,ID;
+    private int level;
 
     public void setWidth(float width) { this.width = width; }
     public void setLength(float length) {this.length = length; }
@@ -254,14 +251,12 @@ class Box2 {
     public float getPosx() { return posx; }
     public float getPosy() { return posy; }
     public int getLevel() { return level; }
-    public void setID(int ID) {this.ID=ID;}
-    public int getID(){return ID;}
-    public Box2(float width, float length, float posx, float posy, int ID) {
+
+    public Box2(float width, float length, float posx, float posy) {
         setWidth(width);
         setLength(length);
         setPosx(posx);
         setPosy(posy);
-        setID(ID);
     }
 }
 
@@ -355,11 +350,11 @@ class FFDH {
         // Add the board as the first object
         //sqrs.add(new Box2(50, 50, 0, 0));
 
-       // sqrs.add(new Box2(60, 3, 0, 0));
-       // sqrs.add(new Box2(30, 9, 0, 0));
-       // sqrs.add(new Box2(50, 1, 0, 0));
-       // sqrs.add(new Box2(70, 6, 0, 0));
-        // sqrs.add(new Box2(10, 3, 0, 0));
+        sqrs.add(new Box2(60, 3, 0, 0));
+        sqrs.add(new Box2(30, 9, 0, 0));
+        sqrs.add(new Box2(50, 1, 0, 0));
+        sqrs.add(new Box2(70, 6, 0, 0));
+        sqrs.add(new Box2(10, 3, 0, 0));
 
 /*
         //create 5 boxes with random values
