@@ -9,6 +9,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 import static java.lang.Math.abs;
 
+
 public class NewUI {
     private JFrame frame;
     private JPanel inputPanel; // Main panel for user inputs
@@ -18,13 +19,14 @@ public class NewUI {
     private JButton drawButton;
     private JButton eraseButton;
     private List<RectangleInputPanel> rectangleInputPanels = new ArrayList<>();
-    int rows=0;//yellow
+    int rows=0;
     ArrayList<Float> stock = new ArrayList<Float>();
     ArrayList<Box2> BOX = new ArrayList<Box2>();
+    double scaleFactor;
     // Add the generateColorPalette method
     private Color[] generateColorPalette(int numColors) {
         Color[] palette = new Color[numColors];
-        float saturation = 1.0f;
+        float saturation = .75f;
         float brightness = 1.0f;
 
         for (int i = 0; i < numColors; i++) {
@@ -37,7 +39,6 @@ public class NewUI {
 
     // Create a private field to store the generated color palette
     private Color[] partColors;
-
     public NewUI() {
         // Create the main frame
         frame = new JFrame("Cut List Helper");
@@ -131,6 +132,7 @@ public class NewUI {
         rows=0;
         stock.clear();
         BOX.clear();
+        scaleFactor=1;
         for (RectangleInputPanel inputPanel : rectangleInputPanels) {//look through all the data
             inputPanel.feedRectangle(g);
             rows++;
@@ -166,10 +168,9 @@ public class NewUI {
         private JTextField heightField;
         private JTextField widthField;
         private JTextField quantityField;
-        private int rectangleNumber;
+
 
         public RectangleInputPanel(int number) {
-            this.rectangleNumber = number;
             if(number==1){
                 setBorder(BorderFactory.createTitledBorder("Stock"));
             }else {
@@ -198,17 +199,20 @@ public class NewUI {
             String quantityStr = quantityField.getText();
 //
             try {
+                scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / stock.get(0), 1.0 * (frame.getHeight()-50) / stock.get(1))) * 0.9;//set scaling mult based off stock
                 FFDH.setBoxesLevels(BOX, stock.get(0));
-                FFDH.setBoxesPositions(BOX);
-
-                Rectangle2D.Double rect = new Rectangle2D.Double(0, 0, stock.get(0), stock.get(1));
+                FFDH.setBoxesPositions(BOX,stock.get(1));
+                Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, stock.get(0)*scaleFactor, stock.get(1)*scaleFactor);
                 Graphics2D g2d = (Graphics2D)g.create();
-                g2d.draw(rect);
-
-                for (int i = 0; i < BOX.size(); i++) {
-                    g.setColor(partColors[rectangleNumber - 1]); // Use color from the palette
-                    g.fillRect((int) BOX.get(i).getPosx(), (int) BOX.get(i).getPosy(),
-                            (int) BOX.get(i).getWidth(), (int) BOX.get(i).getLength()); // Fill the box with color
+                g2d.draw(srect);
+                for(int i=0;i<BOX.size();i++) {
+                    Color yes[];
+                    yes=generateColorPalette(rows);
+                    Rectangle2D.Double prect = new Rectangle2D.Double((BOX.get(i).getPosx()*scaleFactor+10), (BOX.get(i).getPosy()*scaleFactor+10), (BOX.get(i).getWidth()*scaleFactor), (BOX.get(i).getLength()*scaleFactor));
+                    g2d.setColor(yes[BOX.get(i).getID()]);
+                    g2d.fill(prect);
+                    g2d.setColor(Color.black);
+                    g2d.draw(prect);
                 }
             } catch (NumberFormatException e) {
                 // Handle invalid input
@@ -221,12 +225,12 @@ public class NewUI {
             try {
 
                 if(rows==0) {
-                    stock.add(Float.parseFloat(heightStr));
                     stock.add(Float.parseFloat(widthStr));
+                    stock.add(Float.parseFloat(heightStr));
                     stock.add(Float.parseFloat(quantityStr));
                 }else{
                     for(int i=0;i<Integer.parseInt(quantityStr);i++) {
-                        Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0);
+                        Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows);
                         BOX.add(a);
                     }
                 }
@@ -239,7 +243,7 @@ public class NewUI {
 //algorithm goes below
 class Box2 {
     private float width, length, posx, posy;
-    private int level;
+    private int level,ID;
 
     public void setWidth(float width) { this.width = width; }
     public void setLength(float length) {this.length = length; }
@@ -251,12 +255,14 @@ class Box2 {
     public float getPosx() { return posx; }
     public float getPosy() { return posy; }
     public int getLevel() { return level; }
-
-    public Box2(float width, float length, float posx, float posy) {
+    public void setID(int ID) {this.ID=ID;}
+    public int getID(){return ID;}
+    public Box2(float width, float length, float posx, float posy, int ID) {
         setWidth(width);
         setLength(length);
         setPosx(posx);
         setPosy(posy);
+        setID(ID);
     }
 }
 
@@ -308,7 +314,7 @@ class FFDH {
         return boxes;
     }
 
-    public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes) {
+    public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes, float boardheight) {
         int i = 0;
         float tempTallest = boxes.get(0).getLength();
 
@@ -318,7 +324,7 @@ class FFDH {
                 // Set the x pos to the previous box's width and the y pos to the previous box's y pos if they're on the same level
                 boxes.get(i).setPosx(boxes.get(i - 1).getWidth() + boxes.get(i - 1).getPosx());
                 boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
-            } else {
+            } else if(tempTallest + boxes.get(i).getLength() <= boardheight){
                 // If new level: reset x pos to 0, set the y pos to the temp tallest, set temp tallest to current length and pos y
                 boxes.get(i).setPosx(0);
                 boxes.get(i).setPosy(tempTallest);
@@ -347,15 +353,6 @@ class FFDH {
         float boardWidth = 1000;
         ArrayList<Box2> sqrs = new ArrayList<>();
 
-        // Add the board as the first object
-        //sqrs.add(new Box2(50, 50, 0, 0));
-
-        sqrs.add(new Box2(60, 3, 0, 0));
-        sqrs.add(new Box2(30, 9, 0, 0));
-        sqrs.add(new Box2(50, 1, 0, 0));
-        sqrs.add(new Box2(70, 6, 0, 0));
-        sqrs.add(new Box2(10, 3, 0, 0));
-
 /*
         //create 5 boxes with random values
         for (i = 0; i < 5; i++) {
@@ -369,7 +366,7 @@ class FFDH {
         System.out.println("---------------------");
 
         setBoxesLevels(sqrs, boardWidth);
-        setBoxesPositions(sqrs);
+        //setBoxesPositions(sqrs);
 
         printBoxes(sqrs, boardWidth);
     }
