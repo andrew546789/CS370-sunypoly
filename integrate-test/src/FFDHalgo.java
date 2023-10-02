@@ -51,8 +51,7 @@ class FFDH {
 
     public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength) {
         float [] runningWidths = new float[boxes.size()];
-        //float [] runningLengths = new float[boxes.size()];
-        float runningLengths = boxes.get(0).getLength();
+
         int i, level = 0;
 
         // Get ordered boxes
@@ -60,7 +59,6 @@ class FFDH {
 
         // Add the first box to the running width and length
         runningWidths[level] += boxes.get(0).getWidth();
-        //runningLengths[level] += boxes.get(0).getLength();
 
         // Go through every box
         for(i = 0; i < boxes.size(); i++) {
@@ -76,14 +74,9 @@ class FFDH {
 
                     // Always add to the running width
                     runningWidths[level] += boxes.get(i).getWidth();
-
                     break;
                 }
             }
-        }
-
-        for(level = 0; i < boxes.size(); level++) {
-
         }
 
         return boxes;
