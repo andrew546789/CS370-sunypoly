@@ -201,7 +201,7 @@ public class NewUI {
             try {
                 scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / stock.get(0), 1.0 * (frame.getHeight()-50) / stock.get(1))) * 0.9;//set scaling mult based off stock
                 FFDH.setBoxesLevels(BOX, stock.get(0));
-                FFDH.setBoxesPositions(BOX);
+                FFDH.setBoxesPositions(BOX,stock.get(1));
                 Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, stock.get(0)*scaleFactor, stock.get(1)*scaleFactor);
                 Graphics2D g2d = (Graphics2D)g.create();
                 g2d.draw(srect);
@@ -314,7 +314,7 @@ class FFDH {
         return boxes;
     }
 
-    public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes) {
+    public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes, float boardheight) {
         int i = 0;
         float tempTallest = boxes.get(0).getLength();
 
@@ -324,7 +324,7 @@ class FFDH {
                 // Set the x pos to the previous box's width and the y pos to the previous box's y pos if they're on the same level
                 boxes.get(i).setPosx(boxes.get(i - 1).getWidth() + boxes.get(i - 1).getPosx());
                 boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
-            } else {
+            } else if(tempTallest + boxes.get(i).getLength() <= boardheight){
                 // If new level: reset x pos to 0, set the y pos to the temp tallest, set temp tallest to current length and pos y
                 boxes.get(i).setPosx(0);
                 boxes.get(i).setPosy(tempTallest);
@@ -366,7 +366,7 @@ class FFDH {
         System.out.println("---------------------");
 
         setBoxesLevels(sqrs, boardWidth);
-        setBoxesPositions(sqrs);
+        //setBoxesPositions(sqrs);
 
         printBoxes(sqrs, boardWidth);
     }
