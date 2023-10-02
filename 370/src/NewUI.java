@@ -331,8 +331,8 @@ class FFDH {
                 tempTallest = boxes.get(i).getLength() + boxes.get(i).getPosy();
             }
             else {
-            	boxes.get(i).setPosx(-100);
-                boxes.get(i).setPosy(-100);
+            	boxes.get(i).setWidth(0);
+                boxes.get(i).setLength(0);
             }
         }
 
