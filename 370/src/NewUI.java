@@ -291,47 +291,71 @@ class FFDH {
 
     public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth) {
         float [] runningWidths = new float[boxes.size()];
+
         int i, level = 0;
 
         // Get ordered boxes
         boxes = simpleBoxSort(boxes);
 
-        // Add the first box to the running width
+        // Add the first box to the running width and length
         runningWidths[level] += boxes.get(0).getWidth();
 
         // Go through every box
-        for(i = 1; i < boxes.size(); i++) {
-            if((runningWidths[level] + boxes.get(i).getWidth()) > boardWidth) {
-                // Increase the level if the current widths of the level of the box are bigger than the boardwidth
-                level += 1;
+        for(i = 0; i < boxes.size(); i++) {
+            // Go through every level
+            for (int j = 0; j < runningWidths.length; j++) {
+                // Find correct level when current widths of the level + the box are less than or equal to the board width
+                if ((runningWidths[j] + boxes.get(i).getWidth()) <= boardWidth) {
+                    // Set level if the box can fit
+                    level = j;
+
+                    // Always set the level of the box
+                    boxes.get(i).setLevel(level);
+
+                    // Always add to the running width
+                    runningWidths[level] += boxes.get(i).getWidth();
+                    break;
+                }
             }
-            // Always add to the running width
-            runningWidths[level] += boxes.get(i).getWidth();
-            // Always set the level of the box
-            boxes.get(i).setLevel(level);
         }
 
         return boxes;
     }
 
-    public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes, float boardheight) {
+    public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes, float boardHeight) {
         int i = 0;
         float tempTallest = boxes.get(0).getLength();
+        boolean sorted = false;
 
-        // Go through every box
+        // Sort boxes based on their level
+        while(!sorted) {
+            sorted = true;
+
+            // For every box, except the last one
+            for(i = 0; i < boxes.size() - 1; i++) {
+                // If the level of the next box is smaller than the level of the current box
+                if(boxes.get(i + 1).getLevel() < boxes.get(i).getLevel()) {
+                    Box2 tempBox = boxes.get(i);
+                    boxes.set(i, boxes.get(i + 1));
+                    boxes.set(i + 1, tempBox);
+                    sorted = false;
+                }
+            }
+        }
+
+        // Go through every box to find positions
         for(i = 1; i < boxes.size(); i++) {
             if(boxes.get(i).getLevel() == boxes.get(i - 1).getLevel()) {
                 // Set the x pos to the previous box's width and the y pos to the previous box's y pos if they're on the same level
                 boxes.get(i).setPosx(boxes.get(i - 1).getWidth() + boxes.get(i - 1).getPosx());
                 boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
-            } else if(tempTallest + boxes.get(i).getLength() <= boardheight){
+            } else if (tempTallest + boxes.get(i).getLength() <= boardHeight) {
                 // If new level: reset x pos to 0, set the y pos to the temp tallest, set temp tallest to current length and pos y
                 boxes.get(i).setPosx(0);
                 boxes.get(i).setPosy(tempTallest);
                 tempTallest = boxes.get(i).getLength() + boxes.get(i).getPosy();
-            }
-            else {
-            	boxes.get(i).setWidth(0);
+            } else {
+                boxes.get(i).setWidth(0);
                 boxes.get(i).setLength(0);
             }
         }
@@ -354,24 +378,8 @@ class FFDH {
     public static void main(String[] args) {
         Random rand = new Random();
         int i = 0;
-        float boardWidth = 1000;
+        float boardWidth = 100;
+        float boardLength = 200;
         ArrayList<Box2> sqrs = new ArrayList<>();
-
-/*
-        //create 5 boxes with random values
-        for (i = 0; i < 5; i++) {
-            sqrs.add(new Box2(rand.nextInt(10), rand.nextInt(10), 0, 0));
-        }
-*/
-
-        // Print boxes values
-        printBoxes(sqrs, boardWidth);
-
-        System.out.println("---------------------");
-
-        setBoxesLevels(sqrs, boardWidth);
-        //setBoxesPositions(sqrs);
-
-        printBoxes(sqrs, boardWidth);
     }
 }
