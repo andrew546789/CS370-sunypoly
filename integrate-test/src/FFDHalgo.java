@@ -49,7 +49,7 @@ class FFDH {
         return boxes;
     }
 
-    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength) {
+    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth) {
         float [] runningWidths = new float[boxes.size()];
 
         int i, level = 0;
@@ -82,7 +82,7 @@ class FFDH {
         return boxes;
     }
 
-    public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes) {
+    public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes, float boardHeight) {
         int i = 0;
         float tempTallest = boxes.get(0).getLength();
         boolean sorted = false;
@@ -109,11 +109,14 @@ class FFDH {
                 // Set the x pos to the previous box's width and the y pos to the previous box's y pos if they're on the same level
                 boxes.get(i).setPosx(boxes.get(i - 1).getWidth() + boxes.get(i - 1).getPosx());
                 boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
-            } else {
+            } else if (tempTallest + boxes.get(i).getLength() <= boardHeight) {
                 // If new level: reset x pos to 0, set the y pos to the temp tallest, set temp tallest to current length and pos y
                 boxes.get(i).setPosx(0);
                 boxes.get(i).setPosy(tempTallest);
                 tempTallest = boxes.get(i).getLength() + boxes.get(i).getPosy();
+            } else {
+                boxes.get(i).setWidth(0);
+                boxes.get(i).setLength(0);
             }
         }
 
