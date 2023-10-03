@@ -49,10 +49,9 @@ class FFDH {
         return boxes;
     }
 
-    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength) {
+    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth) {
         float [] runningWidths = new float[boxes.size()];
-        //float [] runningLengths = new float[boxes.size()];
-        float runningLengths = boxes.get(0).getLength();
+
         int i, level = 0;
 
         // Get ordered boxes
@@ -60,7 +59,6 @@ class FFDH {
 
         // Add the first box to the running width and length
         runningWidths[level] += boxes.get(0).getWidth();
-        //runningLengths[level] += boxes.get(0).getLength();
 
         // Go through every box
         for(i = 0; i < boxes.size(); i++) {
@@ -76,20 +74,15 @@ class FFDH {
 
                     // Always add to the running width
                     runningWidths[level] += boxes.get(i).getWidth();
-
                     break;
                 }
             }
         }
 
-        for(level = 0; i < boxes.size(); level++) {
-
-        }
-
         return boxes;
     }
 
-    public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes) {
+    public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes, float boardHeight) {
         int i = 0;
         float tempTallest = boxes.get(0).getLength();
         boolean sorted = false;
@@ -116,11 +109,14 @@ class FFDH {
                 // Set the x pos to the previous box's width and the y pos to the previous box's y pos if they're on the same level
                 boxes.get(i).setPosx(boxes.get(i - 1).getWidth() + boxes.get(i - 1).getPosx());
                 boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
-            } else {
+            } else if (tempTallest + boxes.get(i).getLength() <= boardHeight) {
                 // If new level: reset x pos to 0, set the y pos to the temp tallest, set temp tallest to current length and pos y
                 boxes.get(i).setPosx(0);
                 boxes.get(i).setPosy(tempTallest);
                 tempTallest = boxes.get(i).getLength() + boxes.get(i).getPosy();
+            } else {
+                boxes.get(i).setWidth(0);
+                boxes.get(i).setLength(0);
             }
         }
 
