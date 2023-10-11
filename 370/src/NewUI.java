@@ -18,6 +18,8 @@ public class NewUI {
     private JButton addButton;
     private JButton drawButton;
     private JButton eraseButton;
+    //private JButton mgrainButton;
+    //private JButton grainButton;
     private List<RectangleInputPanel> rectangleInputPanels = new ArrayList<>();
     int rows=0;
     ArrayList<Float> stock = new ArrayList<Float>();
@@ -51,12 +53,32 @@ public class NewUI {
         addButton = new JButton("Add");
         eraseButton = new JButton("Remove");
         drawButton = new JButton("Calculate");
+        //mgrainButton = new JButton("Grain Matters");
+        //grainButton = new JButton("Horizontal");
         addButton.setPreferredSize(new Dimension(120, 30)); // Set button size
         drawButton.setPreferredSize(new Dimension(120, 30)); // Set button size
         eraseButton.setPreferredSize(new Dimension(120, 30)); // Set button size
+        //mgrainButton.setPreferredSize(new Dimension(120, 30)); // Set button size
+        //grainButton.setPreferredSize(new Dimension(120, 30)); // Set button size
         // Initialize the color palette with 10 colors
         partColors = generateColorPalette(10);
         // Add action listeners to buttons
+
+
+
+
+        //mgrainButton.addActionListener(new ActionListener() {
+        //    @Override
+        //    public void actionPerformed(ActionEvent e) {
+        //        addRectangleInputPanel();
+        //    }
+        //});
+        //grainButton.addActionListener(new ActionListener() {
+        //    @Override
+        //    public void actionPerformed(ActionEvent e) {
+        //        addRectangleInputPanel();
+        //    }
+        //});
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -66,9 +88,7 @@ public class NewUI {
 
         drawButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                displayPanel.repaint();
-            }
+            public void actionPerformed(ActionEvent e) {displayPanel.repaint();}
         });
 
         eraseButton.addActionListener(new ActionListener() {
@@ -82,6 +102,7 @@ public class NewUI {
         buttonPanel.add(addButton);
         buttonPanel.add(drawButton);
         buttonPanel.add(eraseButton);
+        //buttonPanel.add(mgrainButton);
 
         // Create a panel for displaying rectangles and customize its paint behavior
         displayPanel = new JPanel() {
@@ -180,12 +201,13 @@ public class NewUI {
             widthField = new JTextField();
             quantityField = new JTextField();
 
-            add(new JLabel("H:"));
+            add(new JLabel("Height:"));
             add(heightField);
-            add(new JLabel("W:"));
+            add(new JLabel("Width:"));
             add(widthField);
-            add(new JLabel("Qty:"));
+            add(new JLabel("Quantity:"));
             add(quantityField);
+            //add(grainButton);
 
             widthField.setPreferredSize(new Dimension(40, 25));
             heightField.setPreferredSize(new Dimension(40, 25));
@@ -213,7 +235,10 @@ public class NewUI {
                     g2d.fill(prect);
                     g2d.setColor(Color.black);
                     g2d.draw(prect);
-                }
+                    if((BOX.get(i).getLength()*scaleFactor)>15&&20<(BOX.get(i).getWidth()*scaleFactor)) {//only put a part display if you can see the part
+                        g2d.drawString("Prt" + BOX.get(i).getID(), (int) (BOX.get(i).getPosx() * scaleFactor + 12), (int) (BOX.get(i).getPosy() * scaleFactor + 22));// part label on each part
+                    }
+                    }
             } catch (NumberFormatException e) {
                 // Handle invalid input
             }
