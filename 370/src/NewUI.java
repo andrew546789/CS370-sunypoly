@@ -200,7 +200,7 @@ public class NewUI {
 //
             try {
                 scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / stock.get(0), 1.0 * (frame.getHeight()-50) / stock.get(1))) * 0.9;//set scaling mult based off stock
-                FFDH.setBoxesLevels(BOX, stock.get(0));
+                FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1));
                 FFDH.setBoxesPositions(BOX,stock.get(1));
                 Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, stock.get(0)*scaleFactor, stock.get(1)*scaleFactor);
                 Graphics2D g2d = (Graphics2D)g.create();
@@ -289,7 +289,7 @@ class FFDH {
         return boxes;
     }
 
-    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth) {
+    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength) {
         float [] runningWidths = new float[boxes.size()];
 
         int i, level = 0;
@@ -298,14 +298,15 @@ class FFDH {
         boxes = simpleBoxSort(boxes);
 
         // Add the first box to the running width and length
-        runningWidths[level] += boxes.get(0).getWidth();
+        //runningWidths[level] += boxes.get(0).getWidth();
 
         // Go through every box
         for(i = 0; i < boxes.size(); i++) {
             // Go through every level
             for (int j = 0; j < runningWidths.length; j++) {
                 // Find correct level when current widths of the level + the box are less than or equal to the board width
-                if ((runningWidths[j] + boxes.get(i).getWidth()) <= boardWidth) {
+                if (((runningWidths[j] + boxes.get(i).getWidth()) <= boardWidth) && (boxes.get(i).getWidth() <= boardWidth) 
+                		&& (boxes.get(i).getLength() <= boardLength)) {
                     // Set level if the box can fit
                     level = j;
 
@@ -316,6 +317,11 @@ class FFDH {
                     runningWidths[level] += boxes.get(i).getWidth();
                     break;
                 }
+                else if(boxes.get(i).getWidth() > boardWidth || boxes.get(i).getLength() > boardLength) {
+                	boxes.get(i).setWidth(0);
+                    boxes.get(i).setLength(0);
+                }
+                	
             }
         }
 
