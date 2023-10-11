@@ -295,6 +295,15 @@ class FFDH {
     public static ArrayList<Box2> simpleBoxSort(ArrayList<Box2> boxes) {
         boolean sorted = false;
         int i = 0;
+        float tempWidth = 0;
+
+        for(i = 0; i < boxes.size(); i++) {
+            if(boxes.get(i).getWidth() > boxes.get(i).getLength()) {
+                tempWidth = boxes.get(i).getWidth();
+                boxes.get(i).setWidth(boxes.get(i).getLength());
+                boxes.get(i).setLength(tempWidth);
+            }
+        }
 
         // Iterate through every box to sort them
         while(!sorted) {
