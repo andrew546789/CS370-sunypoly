@@ -222,7 +222,7 @@ public class NewUI {
 //
             try {
                 scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / stock.get(0), 1.0 * (frame.getHeight()-50) / stock.get(1))) * 0.9;//set scaling mult based off stock
-                FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1));
+                FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1), graincare, stock.get(3));
                 FFDH.setBoxesPositions(BOX,stock.get(1));
                 Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, stock.get(0)*scaleFactor, stock.get(1)*scaleFactor);
                 Graphics2D g2d = (Graphics2D)g.create();
@@ -298,13 +298,11 @@ class Box2 {
 }
 
 class FFDH {
-    public static ArrayList<Box2> simpleBoxSort(ArrayList<Box2> boxes) {
+    public static ArrayList<Box2> simpleBoxSort(ArrayList<Box2> boxes, boolean graincare, graindir) {
         boolean sorted = false;
         int i = 0;
         float tempWidth = 0;
-
-        boolean graincare = true;
-        boolean graindir = true;
+        
         
         if (graincare == true) {
         	for( i=0 ; i < boxes.size(); i++) {
@@ -352,7 +350,7 @@ class FFDH {
         int i, level = 0;
 
         // Get ordered boxes
-        boxes = simpleBoxSort(boxes);
+        boxes = simpleBoxSort(boxes, graincare, graindir);
 
         // Add the first box to the running width and length
         //runningWidths[level] += boxes.get(0).getWidth();
