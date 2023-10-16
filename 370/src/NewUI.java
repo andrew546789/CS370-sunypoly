@@ -222,8 +222,8 @@ public class NewUI {
 //
             try {
                 scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / stock.get(0), 1.0 * (frame.getHeight()-50) / stock.get(1))) * 0.9;//set scaling mult based off stock
-                FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1), false, true);
-                // the first false if for if the grain matters and the second true is for the stock grain directions
+                FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1), 2);
+                // 2 is grain dir doesnt matter 0 and 1 doesnt matter aslong as the inputs are on the same page.
                 FFDH.setBoxesPositions(BOX,stock.get(1));
                 Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, stock.get(0)*scaleFactor, stock.get(1)*scaleFactor);
                 Graphics2D g2d = (Graphics2D)g.create();
@@ -299,13 +299,39 @@ class Box2 {
 }
 
 class FFDH {
-    public static ArrayList<Box2> simpleBoxSort(ArrayList<Box2> boxes, boolean graincare,boolean graindir) {
+    public static ArrayList<Box2> simpleBoxSort(ArrayList<Box2> boxes, int graindir) {
         boolean sorted = false;
         int i = 0;
         float tempWidth = 0;
+        boolean graincare = true;
         
+        if(graindir == 1) {
+        	graincare = true;
+        }
+        else if (graindir == 0) {
+        	graincare = false;
+        }
+
         
-        if (graincare == true) {
+        for(i=0; i < boxes.size() ; i++) {
+        	if( graindir == 2 ) {
+        		if(boxes.get(i).getWidth() > boxes.get(i).getLength()) {
+        			tempWidth = boxes.get(i).getWidth();
+        			boxes.get(i).setWidth(boxes.get(i).getLength());
+        			boxes.get(i).setLength(tempWidth);
+        		}
+        	}
+        	else if (graincare != boxes.get(i).getGrain()) {
+        		tempWidth = boxes.get(i).getWidth();
+    			boxes.get(i).setWidth(boxes.get(i).getLength());
+    			boxes.get(i).setLength(tempWidth);
+        	}
+        	else if(graincare == boxes.get(i).getGrain()) {
+        		
+        	}
+        }
+        
+        /*if (graincare == true) {
         	for( i=0 ; i < boxes.size(); i++) {
         		if(boxes.get(i).getGrain() == graindir) {
         			
@@ -325,7 +351,7 @@ class FFDH {
         			boxes.get(i).setLength(tempWidth);
         		}
         	}
-        }
+        }*/
 
         // Iterate through every box to sort them
         while(!sorted) {
@@ -345,13 +371,13 @@ class FFDH {
         return boxes;
     }
 
-    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength, boolean graincare, boolean graindir) {
+    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength, int graindir) {
         float [] runningWidths = new float[boxes.size()];
 
         int i, level = 0;
 
         // Get ordered boxes
-        boxes = simpleBoxSort(boxes, graincare, graindir);
+        boxes = simpleBoxSort(boxes, graindir);
 
         // Add the first box to the running width and length
         //runningWidths[level] += boxes.get(0).getWidth();
