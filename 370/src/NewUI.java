@@ -298,7 +298,7 @@ class Box2 {
 }
 
 class FFDH {
-    public static ArrayList<Box2> simpleBoxSort(ArrayList<Box2> boxes, boolean graincare, graindir) {
+    public static ArrayList<Box2> simpleBoxSort(ArrayList<Box2> boxes, boolean graincare,boolean graindir) {
         boolean sorted = false;
         int i = 0;
         float tempWidth = 0;
@@ -344,7 +344,7 @@ class FFDH {
         return boxes;
     }
 
-    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength) {
+    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength, boolean graincare, boolean graindir) {
         float [] runningWidths = new float[boxes.size()];
 
         int i, level = 0;
