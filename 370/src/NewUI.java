@@ -324,19 +324,6 @@ class FFDH {
         		}
         	}
         }
-        
-        /*if (graincare == true) {
-        	for( i=0 ; i < boxes.size(); i++) {
-        		if(boxes.get(i).getGrain() == graindir) {
-        			
-        		}
-        		else if(boxes.get(i).getGrain() != graindir) { 
-        			tempWidth = boxes.get(i).getWidth();
-        			boxes.get(i).setWidth(boxes.get(i).getLength());
-        			boxes.get(i).setLength(tempWidth);
-        		}
-        	}
-        }
         else {
         	for(i = 0; i < boxes.size(); i++) {
         		if(boxes.get(i).getWidth() > boxes.get(i).getLength()) {
@@ -345,7 +332,10 @@ class FFDH {
         			boxes.get(i).setLength(tempWidth);
         		}
         	}
-        }*/
+        }
+        
+        	
+
 
         // Iterate through every box to sort them
         while(!sorted) {
