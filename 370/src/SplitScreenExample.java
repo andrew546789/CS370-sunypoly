@@ -32,6 +32,17 @@ public class SplitScreenExample {
 
         // Create the right panel
         JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BorderLayout());
+
+        // Create buttons for the right panel
+        JButton leftArrowButton = new JButton("←");
+        JButton rightArrowButton = new JButton("→");
+
+        // Create a panel for the buttons and add them to the right panel
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(leftArrowButton);
+        buttonPanel.add(rightArrowButton);
+        rightPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         // Set the preferred size of the left panel to make it wider
         leftPanel.setPreferredSize(new Dimension(400, 600));
