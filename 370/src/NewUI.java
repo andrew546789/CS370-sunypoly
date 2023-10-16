@@ -256,7 +256,7 @@ public class NewUI {
                     stock.add(Float.parseFloat(quantityStr));
                 }else{
                     for(int i=0;i<Integer.parseInt(quantityStr);i++) {
-                        Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows,true);
+                        Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows,2);
                         BOX.add(a);
                     }
                 }
@@ -269,15 +269,14 @@ public class NewUI {
 //algorithm goes below
 class Box2 {
     private float width, length, posx, posy;
-    private int level,ID;
-    private boolean grain;
+    private int level, ID, grain;
 
     public void setWidth(float width) { this.width = width; }
     public void setLength(float length) {this.length = length; }
     public void setPosx(float posx) { this.posx = posx; }
     public void setPosy(float posy) { this.posy = posy; }
     public void setLevel(int level) { this.level = level; }
-    public void setgrain(boolean grain) { this.grain = grain; }
+    public void setgrain(int grain) { this.grain = grain; }
     public void setID(int ID) {this.ID=ID;}
     
     public float getWidth() { return width; }
@@ -286,9 +285,9 @@ class Box2 {
     public float getPosy() { return posy; }
     public int getLevel() { return level; }
     public int getID(){return ID;}
-    public boolean getGrain() { return grain;}
+    public int getGrain() { return grain;}
     
-    public Box2(float width, float length, float posx, float posy, int ID, boolean grain) {
+    public Box2(float width, float length, float posx, float posy, int ID, int grain) {
         setWidth(width);
         setLength(length);
         setPosx(posx);
@@ -304,30 +303,25 @@ class FFDH {
         int i = 0;
         float tempWidth = 0;
         boolean graincare = true;
+                
         
-        if(graindir == 1) {
-        	graincare = true;
-        }
-        else if (graindir == 0) {
-        	graincare = false;
-        }
-
-        
-        for(i=0; i < boxes.size() ; i++) {
-        	if( graindir == 2 ) {
-        		if(boxes.get(i).getWidth() > boxes.get(i).getLength()) {
+        if(graindir != 2) {
+        	for(i=0; i < boxes.size() ; i++) {
+        		if( boxes.get(i).getGrain() == 2 ) {
+        			if(boxes.get(i).getWidth() > boxes.get(i).getLength()) {
+        				tempWidth = boxes.get(i).getWidth();
+        				boxes.get(i).setWidth(boxes.get(i).getLength());
+        				boxes.get(i).setLength(tempWidth);
+        			}
+        		}
+        		else if (graindir != boxes.get(i).getGrain()) {
         			tempWidth = boxes.get(i).getWidth();
         			boxes.get(i).setWidth(boxes.get(i).getLength());
         			boxes.get(i).setLength(tempWidth);
         		}
-        	}
-        	else if (graincare != boxes.get(i).getGrain()) {
-        		tempWidth = boxes.get(i).getWidth();
-    			boxes.get(i).setWidth(boxes.get(i).getLength());
-    			boxes.get(i).setLength(tempWidth);
-        	}
-        	else if(graincare == boxes.get(i).getGrain()) {
-        		
+        		else if(graindir == boxes.get(i).getGrain()) {
+        			
+        		}
         	}
         }
         
