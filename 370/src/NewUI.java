@@ -222,7 +222,8 @@ public class NewUI {
 //
             try {
                 scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / stock.get(0), 1.0 * (frame.getHeight()-50) / stock.get(1))) * 0.9;//set scaling mult based off stock
-                FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1), graincare, stock.get(3));
+                FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1), false, true);
+                // the first false if for if the grain matters and the second true is for the stock grain directions
                 FFDH.setBoxesPositions(BOX,stock.get(1));
                 Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, stock.get(0)*scaleFactor, stock.get(1)*scaleFactor);
                 Graphics2D g2d = (Graphics2D)g.create();
