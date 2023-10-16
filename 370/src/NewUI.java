@@ -255,7 +255,7 @@ public class NewUI {
                     stock.add(Float.parseFloat(quantityStr));
                 }else{
                     for(int i=0;i<Integer.parseInt(quantityStr);i++) {
-                        Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows);
+                        Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows,true);
                         BOX.add(a);
                     }
                 }
@@ -269,25 +269,31 @@ public class NewUI {
 class Box2 {
     private float width, length, posx, posy;
     private int level,ID;
+    private boolean grain;
 
     public void setWidth(float width) { this.width = width; }
     public void setLength(float length) {this.length = length; }
     public void setPosx(float posx) { this.posx = posx; }
     public void setPosy(float posy) { this.posy = posy; }
     public void setLevel(int level) { this.level = level; }
+    public void setgrain(boolean grain) { this.grain = grain; }
+    public void setID(int ID) {this.ID=ID;}
+    
     public float getWidth() { return width; }
     public float getLength() {return length; }
     public float getPosx() { return posx; }
     public float getPosy() { return posy; }
     public int getLevel() { return level; }
-    public void setID(int ID) {this.ID=ID;}
     public int getID(){return ID;}
-    public Box2(float width, float length, float posx, float posy, int ID) {
+    public boolean getGrain() { return grain;}
+    
+    public Box2(float width, float length, float posx, float posy, int ID, boolean grain) {
         setWidth(width);
         setLength(length);
         setPosx(posx);
         setPosy(posy);
         setID(ID);
+        setgrain(grain);
     }
 }
 
@@ -297,12 +303,29 @@ class FFDH {
         int i = 0;
         float tempWidth = 0;
 
-        for(i = 0; i < boxes.size(); i++) {
-            if(boxes.get(i).getWidth() > boxes.get(i).getLength()) {
-                tempWidth = boxes.get(i).getWidth();
-                boxes.get(i).setWidth(boxes.get(i).getLength());
-                boxes.get(i).setLength(tempWidth);
-            }
+        boolean graincare = true;
+        boolean graindir = true;
+        
+        if (graincare == true) {
+        	for( i=0 ; i < boxes.size(); i++) {
+        		if(boxes.get(i).getGrain() == graindir) {
+        			
+        		}
+        		else if(boxes.get(i).getGrain() != graindir) { 
+        			tempWidth = boxes.get(i).getWidth();
+        			boxes.get(i).setWidth(boxes.get(i).getLength());
+        			boxes.get(i).setLength(tempWidth);
+        		}
+        	}
+        }
+        else {
+        	for(i = 0; i < boxes.size(); i++) {
+        		if(boxes.get(i).getWidth() > boxes.get(i).getLength()) {
+        			tempWidth = boxes.get(i).getWidth();
+        			boxes.get(i).setWidth(boxes.get(i).getLength());
+        			boxes.get(i).setLength(tempWidth);
+        		}
+        	}
         }
 
         // Iterate through every box to sort them
