@@ -268,17 +268,17 @@ public class NewUI {
 }
 //algorithm goes below
 class stock {
-	private float swidth, slength;
+	private float swidth, sheight;
 	
 	public void setswidth(float swidth) { this.swidth = swidth; }
-	public void setslength(float slength) { this.slength = slength; }
+	public void setsheight(float sheight) { this.sheight = sheight; }
 	
 	public float getswidth() { return swidth; }
-	public float getslegnth() { return slength; }
+	public float getslegnth() { return sheight; }
 	
-	public stock(float swidth, float slength) {
+	public stock(float swidth, float sheight) {
 		setswidth(swidth);
-		setslength(slength);
+		setsheight(sheight);
 	}
 }
 
@@ -372,7 +372,48 @@ class FFDH {
 
         return boxes;
     }
+//setboxeslevel for stocks object arraylists
+/*
+ * public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, ArratList<stock> stocks, int graindir) {
+        float [] runningWidths = new float[boxes.size()];
 
+        int i, level = 0;
+
+        // Get ordered boxes
+        boxes = simpleBoxSort(boxes, graindir);
+
+        // Add the first box to the running width and length
+        //runningWidths[level] += boxes.get(0).getWidth();
+
+        // Go through every box
+        for(i = 0; i < boxes.size(); i++) {
+            // Go through every level
+            for (int j = 0; j < runningWidths.length; j++) {
+                // Find correct level when current widths of the level + the box are less than or equal to the board width
+                if (((runningWidths[j] + boxes.get(i).getWidth()) <= stocks.get(x).getswidth()) && (boxes.get(i).getWidth() <= stocks.get(x).getswidth()) 
+                		&& (boxes.get(i).getLength() <= stocks.get(x).getsheight()) {
+                    // Set level if the box can fit
+                    level = j;
+
+                    // Always set the level of the box
+                    boxes.get(i).setLevel(level);
+
+                    // Always add to the running width
+                    runningWidths[level] += boxes.get(i).getWidth();
+                    break;
+                }
+                else if(boxes.get(i).getWidth() > stocks.get(x).getswidth() || boxes.get(i).getLength() > stocks.get(x).getsheight()) {
+                	boxes.get(i).setWidth(0);
+                    boxes.get(i).setLength(0);
+                }
+                	
+            }
+        }
+
+        return boxes;
+    }
+ * 
+ */
     public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength, int graindir) {
         float [] runningWidths = new float[boxes.size()];
 
@@ -412,6 +453,53 @@ class FFDH {
         return boxes;
     }
 
+// implementation of setboxes position with a stock object arraylist
+    /*
+     * 
+     * public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes, ArrayList<stock> stocks) {
+        int i = 0;
+        float tempTallest = boxes.get(0).getLength();
+        boolean sorted = false;
+
+        // Sort boxes based on their level
+        while(!sorted) {
+            sorted = true;
+
+            // For every box, except the last one
+            for(i = 0; i < boxes.size() - 1; i++) {
+                // If the level of the next box is smaller than the level of the current box
+                if(boxes.get(i + 1).getLevel() < boxes.get(i).getLevel()) {
+                    Box2 tempBox = boxes.get(i);
+                    boxes.set(i, boxes.get(i + 1));
+                    boxes.set(i + 1, tempBox);
+                    sorted = false;
+                }
+            }
+        }
+
+        // Go through every box to find positions
+        for(i = 1; i < boxes.size(); i++) {
+            if(boxes.get(i).getLevel() == boxes.get(i - 1).getLevel()) {
+                // Set the x pos to the previous box's width and the y pos to the previous box's y pos if they're on the same level
+                boxes.get(i).setPosx(boxes.get(i - 1).getWidth() + boxes.get(i - 1).getPosx());
+                boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
+            } else if (tempTallest + boxes.get(i).getLength() <= stocks.get(x).getsheight()) {
+                // If new level: reset x pos to 0, set the y pos to the temp tallest, set temp tallest to current length and pos y
+                boxes.get(i).setPosx(0);
+                boxes.get(i).setPosy(tempTallest);
+                tempTallest = boxes.get(i).getLength() + boxes.get(i).getPosy();
+            } else {
+                boxes.get(i).setWidth(0);
+                boxes.get(i).setLength(0);
+            }
+        }
+
+        return boxes;
+    }
+     * 
+     */
+    
+    
     public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes, float boardHeight) {
         int i = 0;
         float tempTallest = boxes.get(0).getLength();
