@@ -267,9 +267,24 @@ public class NewUI {
     }
 }
 //algorithm goes below
+class stock {
+	private float swidth, slength;
+	
+	public void setswidth(float swidth) { this.swidth = swidth; }
+	public void setslength(float slength) { this.slength = slength; }
+	
+	public float getswidth() { return swidth; }
+	public float getslegnth() { return slength; }
+	
+	public stock(float swidth, float slength) {
+		setswidth(swidth);
+		setslength(slength);
+	}
+}
+
 class Box2 {
     private float width, length, posx, posy;
-    private int level, ID, grain;
+    private int level, ID, grain, StockNum;
 
     public void setWidth(float width) { this.width = width; }
     public void setLength(float length) {this.length = length; }
@@ -278,6 +293,7 @@ class Box2 {
     public void setLevel(int level) { this.level = level; }
     public void setgrain(int grain) { this.grain = grain; }
     public void setID(int ID) {this.ID=ID;}
+    public void setStockNum(int StockNum) { this.StockNum = StockNum; }
     
     public float getWidth() { return width; }
     public float getLength() {return length; }
@@ -286,6 +302,7 @@ class Box2 {
     public int getLevel() { return level; }
     public int getID(){return ID;}
     public int getGrain() { return grain;}
+    public int getStockNum() { return StockNum;}
     
     public Box2(float width, float length, float posx, float posy, int ID, int grain) {
         setWidth(width);
@@ -294,6 +311,7 @@ class Box2 {
         setPosy(posy);
         setID(ID);
         setgrain(grain);
+        setStockNum(StockNum);
     }
 }
 
