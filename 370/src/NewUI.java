@@ -417,7 +417,7 @@ class FFDH {
     public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength, int graindir) {
         float [] runningWidths = new float[boxes.size()];
 
-        int i, level = 0;
+        int i, level = 0, x=0;
 
         // Get ordered boxes
         boxes = simpleBoxSort(boxes, graindir);
@@ -457,7 +457,7 @@ class FFDH {
     /*
      * 
      * public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes, ArrayList<stock> stocks) {
-        int i = 0;
+        int i = 0, x = 0;
         float tempTallest = boxes.get(0).getLength();
         boolean sorted = false;
 
