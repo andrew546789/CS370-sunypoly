@@ -8,9 +8,8 @@ import java.util.List;
 import java.lang.reflect.Array;
 import java.util.*;
 import static java.lang.Math.abs;
-
-
 public class NewUI {
+    int currentstock=0;
     int numstockrows=0;
     int numpartrows=0;
     private JFrame frame;
@@ -24,10 +23,7 @@ public class NewUI {
     private JButton drawButton;
     private JButton eraseButton;
     private JButton eraseButton2;
-    JComboBox<String> grainComboBox;
     JTextField kerfSizeField;
-    //private JButton mgrainButton;
-    //private JButton grainButton;
     private List<RectangleInputPanel> rectangleInputPanels = new ArrayList<>();//stock
     private List<RectangleInputPanel2> rectangleInputPanels2 = new ArrayList<>();//part
     int rows=1;
@@ -46,7 +42,6 @@ public class NewUI {
             float hue = (float) i / numColors;
             palette[i] = Color.getHSBColor(hue, saturation, brightness);
         }
-
         return palette;
     }
 
@@ -71,71 +66,24 @@ public class NewUI {
         eraseButton2 = new JButton("Remove Part");
         //mgrainButton = new JButton("Grain Matters");
         //grainButton = new JButton("Horizontal");
-        addButton.setPreferredSize(new Dimension(120, 30)); // Set button size
-        drawButton.setPreferredSize(new Dimension(120, 30)); // Set button size
-        eraseButton.setPreferredSize(new Dimension(120, 30)); // Set button size
-        addButton2.setPreferredSize(new Dimension(120, 30)); // Set button size
-        eraseButton2.setPreferredSize(new Dimension(120, 30)); // Set button size
-        //mgrainButton.setPreferredSize(new Dimension(120, 30)); // Set button size
-        //grainButton.setPreferredSize(new Dimension(120, 30)); // Set button size
+        addButton.setPreferredSize(new Dimension(180, 30)); // Set button size
+        drawButton.setPreferredSize(new Dimension(370, 30)); // Set button size
+        eraseButton.setPreferredSize(new Dimension(180, 30)); // Set button size
+        addButton2.setPreferredSize(new Dimension(180, 30)); // Set button size
+        eraseButton2.setPreferredSize(new Dimension(180, 30)); // Set button size
         // Initialize the color palette with 10 colors
         partColors = generateColorPalette(10);
-        // Add action listeners to buttons
-
-
-
-
-        //mgrainButton.addActionListener(new ActionListener() {
-        //    @Override
-        //    public void actionPerformed(ActionEvent e) {
-        //        addRectangleInputPanel();
-        //    }
-        //});
-        //grainButton.addActionListener(new ActionListener() {
-        //    @Override
-        //    public void actionPerformed(ActionEvent e) {
-        //        addRectangleInputPanel();
-        //    }
-        //});
-
-
-
-
-        //grainComboBox.addActionListener(new ActionListener() {
-        //@Override
-        //public void actionPerformed(ActionEvent e) {
-        // JComboBox cb = (JComboBox)e.getSource();
-        //  String petName = (String)cb.getSelectedItem();
-        //    updateLabel(petName);
-
-        //  }
-
-        //});
-        /*
-        grainComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Get the selected item from the JComboBox
-                String selectedGrain = (String) grainComboBox.getSelectedItem();
-                // Perform some action based on the selected grain
-                JOptionPane.showMessageDialog(null, "You selected: " + selectedGrain);
-            }
-        });
-*/
-
-
+        // Add action listeners to button
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 addRectangleInputPanel();
             }
         });
-
         drawButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {displayPanel.repaint();}
         });
-
         eraseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -155,14 +103,10 @@ public class NewUI {
             }
         });
 
-
-
-
         // Add buttons to the button panel
         buttonPanel.add(addButton);
         buttonPanel0.add(drawButton);
         buttonPanel.add(eraseButton);
-
         buttonPanel2.add(addButton2);
         buttonPanel2.add(eraseButton2);
 
@@ -223,17 +167,8 @@ public class NewUI {
         frame.setVisible(true);
 
     }
-
     // Method to add a new RectangleInputPanel to the input panel
-    private void addRectangleInputPanel() {//this is currently the broken function WIP
-        //inputPanel.remove(inputPanel.getComponentCount() - 1);
-        //inputPanel.revalidate();
-        //inputPanel.repaint();
-        //displayPanel.repaint();//trying to remove the part buttons
-
-
-
-
+    private void addRectangleInputPanel() {
 
         RectangleInputPanel rectangleInputPanel = new RectangleInputPanel(rectangleInputPanels.size() + 1);
         rectangleInputPanels.add(rectangleInputPanel);
@@ -249,7 +184,6 @@ public class NewUI {
         inputPanel.revalidate();
         numpartrows++;
     }
-
     // Method to draw rectangles on the display panel
     private void drawRectangles(Graphics g) {
         //set height,width,quantity arrays to null
@@ -257,14 +191,10 @@ public class NewUI {
         stock.clear();
         BOX.clear();
         scaleFactor=1;
-
         for (RectangleInputPanel inputPanel : rectangleInputPanels) {//look through all the data
             inputPanel.feedRectangle(g);
             //rows++;
         }
-        // for (RectangleInputPanel inputPanel : rectangleInputPanels) {
-        //     inputPanel.drawRectangle(g);//l8r this will only get called once ideally
-        //  }
         for (RectangleInputPanel2 inputPanel : rectangleInputPanels2) {//look through all the data
             inputPanel.feedRectangle(g);
             rows++;
@@ -295,7 +225,6 @@ public class NewUI {
             numpartrows--;
         }
     }
-
     // Main method to create and run the UI
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -305,20 +234,16 @@ public class NewUI {
             }
         });
     }
-
     // Inner class for user input panels
     private class RectangleInputPanel extends JPanel {
         private JTextField heightField;
         private JTextField widthField;
         private JTextField quantityField;
-
-
+        private JComboBox<String> grainComboBox;
         public RectangleInputPanel(int number) {
-            // if(number==1){
+
             setBorder(BorderFactory.createTitledBorder("Stock:"+number));
-            // }else {
-            //     setBorder(BorderFactory.createTitledBorder("Part " + (number - 1)));
-            // }
+
             heightField = new JTextField();
             widthField = new JTextField();
             quantityField = new JTextField();
@@ -329,7 +254,8 @@ public class NewUI {
             add(widthField);
             add(new JLabel("Quantity:"));
             add(quantityField);
-            JComboBox<String> grainComboBox = new JComboBox<>(new String[]{"huh?", "↕","←→"});
+
+            grainComboBox = new JComboBox<>(new String[]{"↕","←→","huh?"});
             //grainComboBox.setSelectedIndex(0);
             grainComboBox.setSelectedIndex(1);
             //grainComboBox.addActionListener(this);
@@ -339,46 +265,13 @@ public class NewUI {
             heightField.setPreferredSize(new Dimension(40, 25));
             quantityField.setPreferredSize(new Dimension(40, 25));
         }
-
-        // Method to draw a rectangle based on user input
-        // public void drawRectangle(Graphics g) {//currently gets called once per row, but once algorithm is in we might use it differently
-        //     String heightStr = heightField.getText();
-        //     String widthStr = widthField.getText();
-        //     String quantityStr = quantityField.getText();
-//
-//            try {
-        //              scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / stock.get(0), 1.0 * (frame.getHeight()-50) / stock.get(1))) * 0.9;//set scaling mult based off stock
-        //            FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1),0);
-        // the first false if for if the grain matters and the second true is for the stock grain directions
-        //          FFDH.setBoxesPositions(BOX,stock.get(1));
-        //        Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, stock.get(0)*scaleFactor, stock.get(1)*scaleFactor);
-        //      Graphics2D g2d = (Graphics2D)g.create();
-        //     g2d.draw(srect);
-        //   for(int i=0;i<BOX.size();i++) {
-        //     Color yes[];
-        //   yes=generateColorPalette(rows);
-        // Rectangle2D.Double prect = new Rectangle2D.Double((BOX.get(i).getPosx()*scaleFactor+10), (BOX.get(i).getPosy()*scaleFactor+10), (BOX.get(i).getWidth()*scaleFactor), (BOX.get(i).getLength()*scaleFactor));
-        //          g2d.setColor(yes[BOX.get(i).getID()]);
-        //        g2d.fill(prect);
-        //      g2d.setColor(Color.black);
-        //    g2d.draw(prect);
-        //  if((BOX.get(i).getLength()*scaleFactor)>15&&20<(BOX.get(i).getWidth()*scaleFactor)) {//only put a part display if you can see the part
-        //    g2d.drawString("Prt" + BOX.get(i).getID(), (int) (BOX.get(i).getPosx() * scaleFactor + 12), (int) (BOX.get(i).getPosy() * scaleFactor + 22));// part label on each part
-        //}
-        //}
-        //} catch (NumberFormatException e) {
-        // Handle invalid input
-        //    }
-        // }
         public void feedRectangle(Graphics g) {
             String heightStr = heightField.getText();
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
-            String graindir="fork";
-          //  graindir= (String)grainComboBox.getSelectedItem();
-            int grainval=2;
-            if(graindir=="↕")grainval=1;
-            if(graindir=="←→")grainval=0;
+            int grainval=0;
+            grainval= (int)grainComboBox.getSelectedIndex();
+
             try {
 
                 //if(rows==0) {
@@ -389,11 +282,8 @@ public class NewUI {
                 for(int i=0;i<Integer.parseInt(quantityStr);i++) {
                     Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows,grainval);
                     sBOX.add(a);
-
-                    //  }
                 }
-                Box2 a = new Box2(0, 0, 0, 0,rows,grainval);
-                BOX.add(a);
+
             } catch (NumberFormatException e) {
                 // Handle invalid input
             }
@@ -404,14 +294,10 @@ public class NewUI {
         private JTextField heightField;
         private JTextField widthField;
         private JTextField quantityField;
-
-
+        private JComboBox<String> grainComboBox;
         public RectangleInputPanel2(int number) {
-            //if(number==1){
-            //    setBorder(BorderFactory.createTitledBorder("Stock"));
-            // }else {
+
             setBorder(BorderFactory.createTitledBorder("Part:"+number));
-            // }
             heightField = new JTextField();
             widthField = new JTextField();
             quantityField = new JTextField();
@@ -422,7 +308,7 @@ public class NewUI {
             add(widthField);
             add(new JLabel("Quantity:"));
             add(quantityField);
-            JComboBox<String> grainComboBox = new JComboBox<>(new String[]{"huh?", "↕","←→"});
+            grainComboBox = new JComboBox<>(new String[]{"↕","←→","huh?"});
             grainComboBox.setSelectedIndex(1);
             add(grainComboBox);
 
@@ -430,19 +316,17 @@ public class NewUI {
             heightField.setPreferredSize(new Dimension(40, 25));
             quantityField.setPreferredSize(new Dimension(40, 25));
         }
-
         // Method to draw a rectangle based on user input
         public void drawRectangle(Graphics g) {//currently gets called once per row, but once algorithm is in we might use it differently
             String heightStr = heightField.getText();
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
-//
             try {
-                scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / stock.get(0), 1.0 * (frame.getHeight()-50) / stock.get(1))) * 0.9;//set scaling mult based off stock
-                FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1), sBOX.get(0).getGrain());
+                scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / sBOX.get(currentstock).getWidth(), 1.0 * (frame.getHeight()-60) / sBOX.get(currentstock).getLength())) * 0.9;//set scaling mult based off stock
+                FFDH.setBoxesLevels(BOX, sBOX.get(currentstock).getWidth(), sBOX.get(currentstock).getLength(), sBOX.get(currentstock).getGrain());
                 // the first false if for if the grain matters and the second true is for the stock grain directions
-                FFDH.setBoxesPositions(BOX,stock.get(1));
-                Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, stock.get(0)*scaleFactor, stock.get(1)*scaleFactor);
+                FFDH.setBoxesPositions(BOX,sBOX.get(currentstock).getLength());
+                Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, sBOX.get(currentstock).getWidth()*scaleFactor, sBOX.get(currentstock).getLength()*scaleFactor);
                 Graphics2D g2d = (Graphics2D)g.create();
                 g2d.draw(srect);
                 for(int i=0;i<BOX.size();i++) {
@@ -465,19 +349,11 @@ public class NewUI {
             String heightStr = heightField.getText();
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
-            String graindir="fork";
-           // graindir= (String)grainComboBox.getSelectedItem();
-            int grainval=2;
-            if(graindir=="↕")grainval=1;
-            if(graindir=="←→")grainval=0;
-            // String skerf=kerfSizeField.getText();
+            int grainval=0;
+            grainval= (int)grainComboBox.getSelectedIndex();
+
             try {
 
-                // if(rows==0) {
-                //     stock.add(Float.parseFloat(widthStr));
-                //     stock.add(Float.parseFloat(heightStr));
-                //     stock.add(Float.parseFloat(quantityStr));
-                // }else{
                 for(int i=0;i<Integer.parseInt(quantityStr);i++) {
                     Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows,grainval);
                     BOX.add(a);
@@ -488,19 +364,6 @@ public class NewUI {
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 //algorithm goes below
 class stock {
@@ -557,8 +420,6 @@ class FFDH {
         int i = 0;
         float tempWidth = 0;
         boolean graincare = true;
-
-
         if(graindir != 2) {
             for(i=0; i < boxes.size() ; i++) {
                 if( boxes.get(i).getGrain() == 2 ) {
