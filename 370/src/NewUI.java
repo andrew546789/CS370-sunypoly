@@ -11,18 +11,29 @@ import static java.lang.Math.abs;
 
 
 public class NewUI {
+    int numstockrows=0;
+    int numpartrows=0;
     private JFrame frame;
     private JPanel inputPanel; // Main panel for user inputs
-    private JPanel buttonPanel; // Panel for buttons
+    private JPanel buttonPanel0; // Panel for calculate
+    private JPanel buttonPanel; // Panel for stock buttons
+    private JPanel buttonPanel2; // Panel for part buttons
     private JPanel displayPanel; // Panel for displaying rectangles
     private JButton addButton;
+    private JButton addButton2;
     private JButton drawButton;
     private JButton eraseButton;
+    private JButton eraseButton2;
+    JComboBox<String> grainComboBox;
+    JTextField kerfSizeField;
     //private JButton mgrainButton;
     //private JButton grainButton;
-    private List<RectangleInputPanel> rectangleInputPanels = new ArrayList<>();
-    int rows=0;
+    private List<RectangleInputPanel> rectangleInputPanels = new ArrayList<>();//stock
+    private List<RectangleInputPanel2> rectangleInputPanels2 = new ArrayList<>();//part
+    int rows=1;
+    float kerf=0f;
     ArrayList<Float> stock = new ArrayList<Float>();
+    ArrayList<Box2> sBOX = new ArrayList<Box2>();
     ArrayList<Box2> BOX = new ArrayList<Box2>();
     double scaleFactor;
     // Add the generateColorPalette method
@@ -48,16 +59,23 @@ public class NewUI {
         frame.setSize(900, 400); // Adjusted frame width
 
         // Create a sub-panel for buttons with a horizontal FlowLayout
+        buttonPanel0 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Arrange buttons from left to right
+        buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Arrange buttons from left to right
         // Create buttons and set their preferred sizes
-        addButton = new JButton("Add");
-        eraseButton = new JButton("Remove");
+        addButton = new JButton("Add Stock");
+        eraseButton = new JButton("Remove Stock");
         drawButton = new JButton("Calculate");
+
+        addButton2 = new JButton("Add Part");
+        eraseButton2 = new JButton("Remove Part");
         //mgrainButton = new JButton("Grain Matters");
         //grainButton = new JButton("Horizontal");
         addButton.setPreferredSize(new Dimension(120, 30)); // Set button size
         drawButton.setPreferredSize(new Dimension(120, 30)); // Set button size
         eraseButton.setPreferredSize(new Dimension(120, 30)); // Set button size
+        addButton2.setPreferredSize(new Dimension(120, 30)); // Set button size
+        eraseButton2.setPreferredSize(new Dimension(120, 30)); // Set button size
         //mgrainButton.setPreferredSize(new Dimension(120, 30)); // Set button size
         //grainButton.setPreferredSize(new Dimension(120, 30)); // Set button size
         // Initialize the color palette with 10 colors
@@ -79,6 +97,33 @@ public class NewUI {
         //        addRectangleInputPanel();
         //    }
         //});
+
+
+
+
+        //grainComboBox.addActionListener(new ActionListener() {
+        //@Override
+        //public void actionPerformed(ActionEvent e) {
+        // JComboBox cb = (JComboBox)e.getSource();
+        //  String petName = (String)cb.getSelectedItem();
+        //    updateLabel(petName);
+
+        //  }
+
+        //});
+        /*
+        grainComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Get the selected item from the JComboBox
+                String selectedGrain = (String) grainComboBox.getSelectedItem();
+                // Perform some action based on the selected grain
+                JOptionPane.showMessageDialog(null, "You selected: " + selectedGrain);
+            }
+        });
+*/
+
+
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -97,12 +142,29 @@ public class NewUI {
                 clearRectangles();
             }
         });
+        eraseButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearRectangles2();
+            }
+        });
+        addButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addRectangleInputPanel2();
+            }
+        });
+
+
+
 
         // Add buttons to the button panel
         buttonPanel.add(addButton);
-        buttonPanel.add(drawButton);
+        buttonPanel0.add(drawButton);
         buttonPanel.add(eraseButton);
-        //buttonPanel.add(mgrainButton);
+
+        buttonPanel2.add(addButton2);
+        buttonPanel2.add(eraseButton2);
 
         // Create a panel for displaying rectangles and customize its paint behavior
         displayPanel = new JPanel() {
@@ -118,7 +180,9 @@ public class NewUI {
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
 
         // Add the button panel at the top of the input panel
+        inputPanel.add(buttonPanel0);
         inputPanel.add(buttonPanel);
+        inputPanel.add(buttonPanel2,inputPanel.getComponentCount());
         // Wrap the inputPanel in a JScrollPane and set its preferred size
         JScrollPane inputScrollPane = new JScrollPane(inputPanel);
         inputScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -135,42 +199,100 @@ public class NewUI {
         frame.add(inputScrollPane, BorderLayout.WEST);
         frame.add(displayScrollPane, BorderLayout.CENTER);
 
+        // Create buttons for the right panel
+        JButton leftArrowButton = new JButton("←");
+        JButton rightArrowButton = new JButton("→");
+
+        // Create a panel for the buttons and add them to the frame directly
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(leftArrowButton);
+        buttonPanel.add(rightArrowButton);
+
+        // Create a JTextField for kerf size input
+        JTextField kerfSizeField = new JTextField(1);
+        kerfSizeField.setText("0");
+        // Create a panel for the buttons and kerf input, and add them to the frame
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(buttonPanel, BorderLayout.EAST);
+        bottomPanel.add(new JLabel("Kerf Size:"), BorderLayout.WEST);
+        bottomPanel.add(kerfSizeField, BorderLayout.CENTER);
+
+        frame.add(bottomPanel, BorderLayout.SOUTH);
+
         // Make the frame visible
         frame.setVisible(true);
+
     }
 
     // Method to add a new RectangleInputPanel to the input panel
-    private void addRectangleInputPanel() {
+    private void addRectangleInputPanel() {//this is currently the broken function WIP
+        //inputPanel.remove(inputPanel.getComponentCount() - 1);
+        //inputPanel.revalidate();
+        //inputPanel.repaint();
+        //displayPanel.repaint();//trying to remove the part buttons
+
+
+
+
+
         RectangleInputPanel rectangleInputPanel = new RectangleInputPanel(rectangleInputPanels.size() + 1);
         rectangleInputPanels.add(rectangleInputPanel);
-        inputPanel.add(rectangleInputPanel);
+        inputPanel.add(rectangleInputPanel,numstockrows+2);
+        numstockrows++;
         inputPanel.revalidate();
+        //inputPanel.add(buttonPanel2,inputPanel.getComponentCount());
+    }
+    private void addRectangleInputPanel2() {
+        RectangleInputPanel2 rectangleInputPanel2 = new RectangleInputPanel2(rectangleInputPanels2.size() + 1);
+        rectangleInputPanels2.add(rectangleInputPanel2);
+        inputPanel.add(rectangleInputPanel2,numstockrows+numpartrows+3);
+        inputPanel.revalidate();
+        numpartrows++;
     }
 
     // Method to draw rectangles on the display panel
     private void drawRectangles(Graphics g) {
         //set height,width,quantity arrays to null
-        rows=0;
+        rows=1;
         stock.clear();
         BOX.clear();
         scaleFactor=1;
+
         for (RectangleInputPanel inputPanel : rectangleInputPanels) {//look through all the data
+            inputPanel.feedRectangle(g);
+            //rows++;
+        }
+        // for (RectangleInputPanel inputPanel : rectangleInputPanels) {
+        //     inputPanel.drawRectangle(g);//l8r this will only get called once ideally
+        //  }
+        for (RectangleInputPanel2 inputPanel : rectangleInputPanels2) {//look through all the data
             inputPanel.feedRectangle(g);
             rows++;
         }
-        for (RectangleInputPanel inputPanel : rectangleInputPanels) {
+        for (RectangleInputPanel2 inputPanel : rectangleInputPanels2) {
             inputPanel.drawRectangle(g);//l8r this will only get called once ideally
         }
     }
 
     // Method to clear all rectangles and input panels
     private void clearRectangles() {
-        if (!rectangleInputPanels.isEmpty()) {
+        if (numstockrows>0) {
             rectangleInputPanels.remove(rectangleInputPanels.size() - 1);
+            inputPanel.remove(inputPanel.getComponentCount() - (2+numpartrows));//add # of parts to 2 to fix
+            inputPanel.revalidate();
+            inputPanel.repaint();
+            displayPanel.repaint();
+            numstockrows--;
+        }
+    }
+    private void clearRectangles2() {
+        if (numpartrows>0) {
+            rectangleInputPanels2.remove(rectangleInputPanels2.size() - 1);
             inputPanel.remove(inputPanel.getComponentCount() - 1);
             inputPanel.revalidate();
             inputPanel.repaint();
             displayPanel.repaint();
+            numpartrows--;
         }
     }
 
@@ -192,11 +314,11 @@ public class NewUI {
 
 
         public RectangleInputPanel(int number) {
-            if(number==1){
-                setBorder(BorderFactory.createTitledBorder("Stock"));
-            }else {
-                setBorder(BorderFactory.createTitledBorder("Part " + (number - 1)));
-            }
+            // if(number==1){
+            setBorder(BorderFactory.createTitledBorder("Stock:"+number));
+            // }else {
+            //     setBorder(BorderFactory.createTitledBorder("Part " + (number - 1)));
+            // }
             heightField = new JTextField();
             widthField = new JTextField();
             quantityField = new JTextField();
@@ -207,7 +329,102 @@ public class NewUI {
             add(widthField);
             add(new JLabel("Quantity:"));
             add(quantityField);
-            //add(grainButton);
+            JComboBox<String> grainComboBox = new JComboBox<>(new String[]{"huh?", "↕","←→"});
+            //grainComboBox.setSelectedIndex(0);
+            grainComboBox.setSelectedIndex(1);
+            //grainComboBox.addActionListener(this);
+            add(grainComboBox);
+
+            widthField.setPreferredSize(new Dimension(40, 25));
+            heightField.setPreferredSize(new Dimension(40, 25));
+            quantityField.setPreferredSize(new Dimension(40, 25));
+        }
+
+        // Method to draw a rectangle based on user input
+        // public void drawRectangle(Graphics g) {//currently gets called once per row, but once algorithm is in we might use it differently
+        //     String heightStr = heightField.getText();
+        //     String widthStr = widthField.getText();
+        //     String quantityStr = quantityField.getText();
+//
+//            try {
+        //              scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / stock.get(0), 1.0 * (frame.getHeight()-50) / stock.get(1))) * 0.9;//set scaling mult based off stock
+        //            FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1),0);
+        // the first false if for if the grain matters and the second true is for the stock grain directions
+        //          FFDH.setBoxesPositions(BOX,stock.get(1));
+        //        Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, stock.get(0)*scaleFactor, stock.get(1)*scaleFactor);
+        //      Graphics2D g2d = (Graphics2D)g.create();
+        //     g2d.draw(srect);
+        //   for(int i=0;i<BOX.size();i++) {
+        //     Color yes[];
+        //   yes=generateColorPalette(rows);
+        // Rectangle2D.Double prect = new Rectangle2D.Double((BOX.get(i).getPosx()*scaleFactor+10), (BOX.get(i).getPosy()*scaleFactor+10), (BOX.get(i).getWidth()*scaleFactor), (BOX.get(i).getLength()*scaleFactor));
+        //          g2d.setColor(yes[BOX.get(i).getID()]);
+        //        g2d.fill(prect);
+        //      g2d.setColor(Color.black);
+        //    g2d.draw(prect);
+        //  if((BOX.get(i).getLength()*scaleFactor)>15&&20<(BOX.get(i).getWidth()*scaleFactor)) {//only put a part display if you can see the part
+        //    g2d.drawString("Prt" + BOX.get(i).getID(), (int) (BOX.get(i).getPosx() * scaleFactor + 12), (int) (BOX.get(i).getPosy() * scaleFactor + 22));// part label on each part
+        //}
+        //}
+        //} catch (NumberFormatException e) {
+        // Handle invalid input
+        //    }
+        // }
+        public void feedRectangle(Graphics g) {
+            String heightStr = heightField.getText();
+            String widthStr = widthField.getText();
+            String quantityStr = quantityField.getText();
+            String graindir="fork";
+            graindir= (String)grainComboBox.getSelectedItem();
+            int grainval=2;
+            if(graindir=="↕")grainval=1;
+            if(graindir=="←→")grainval=0;
+            try {
+
+                //if(rows==0) {
+                stock.add(Float.parseFloat(widthStr));
+                stock.add(Float.parseFloat(heightStr));
+                stock.add(Float.parseFloat(quantityStr));
+                //}else{
+                for(int i=0;i<Integer.parseInt(quantityStr);i++) {
+                    Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows,grainval);
+                    sBOX.add(a);
+
+                    //  }
+                }
+                Box2 a = new Box2(0, 0, 0, 0,rows,grainval);
+                BOX.add(a);
+            } catch (NumberFormatException e) {
+                // Handle invalid input
+            }
+        }
+    }
+    //duplicate function to seperate stock and parts
+    private class RectangleInputPanel2 extends JPanel {
+        private JTextField heightField;
+        private JTextField widthField;
+        private JTextField quantityField;
+
+
+        public RectangleInputPanel2(int number) {
+            //if(number==1){
+            //    setBorder(BorderFactory.createTitledBorder("Stock"));
+            // }else {
+            setBorder(BorderFactory.createTitledBorder("Part:"+number));
+            // }
+            heightField = new JTextField();
+            widthField = new JTextField();
+            quantityField = new JTextField();
+
+            add(new JLabel("Height:"));
+            add(heightField);
+            add(new JLabel("Width:"));
+            add(widthField);
+            add(new JLabel("Quantity:"));
+            add(quantityField);
+            JComboBox<String> grainComboBox = new JComboBox<>(new String[]{"huh?", "↕","←→"});
+            grainComboBox.setSelectedIndex(1);
+            add(grainComboBox);
 
             widthField.setPreferredSize(new Dimension(40, 25));
             heightField.setPreferredSize(new Dimension(40, 25));
@@ -222,8 +439,8 @@ public class NewUI {
 //
             try {
                 scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / stock.get(0), 1.0 * (frame.getHeight()-50) / stock.get(1))) * 0.9;//set scaling mult based off stock
-                FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1), 2);
-                // 2 is grain dir doesnt matter 0 and 1 doesnt matter aslong as the inputs are on the same page.
+                FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1), sBOX.get(0).getGrain());
+                // the first false if for if the grain matters and the second true is for the stock grain directions
                 FFDH.setBoxesPositions(BOX,stock.get(1));
                 Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, stock.get(0)*scaleFactor, stock.get(1)*scaleFactor);
                 Graphics2D g2d = (Graphics2D)g.create();
@@ -239,7 +456,7 @@ public class NewUI {
                     if((BOX.get(i).getLength()*scaleFactor)>15&&20<(BOX.get(i).getWidth()*scaleFactor)) {//only put a part display if you can see the part
                         g2d.drawString("Prt" + BOX.get(i).getID(), (int) (BOX.get(i).getPosx() * scaleFactor + 12), (int) (BOX.get(i).getPosy() * scaleFactor + 22));// part label on each part
                     }
-                    }
+                }
             } catch (NumberFormatException e) {
                 // Handle invalid input
             }
@@ -248,38 +465,57 @@ public class NewUI {
             String heightStr = heightField.getText();
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
+            String graindir="fork";
+            graindir= (String)grainComboBox.getSelectedItem();
+            int grainval=2;
+            if(graindir=="↕")grainval=1;
+            if(graindir=="←→")grainval=0;
+            // String skerf=kerfSizeField.getText();
             try {
 
-                if(rows==0) {
-                    stock.add(Float.parseFloat(widthStr));
-                    stock.add(Float.parseFloat(heightStr));
-                    stock.add(Float.parseFloat(quantityStr));
-                }else{
-                    for(int i=0;i<Integer.parseInt(quantityStr);i++) {
-                        Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows,2);
-                        BOX.add(a);
-                    }
+                // if(rows==0) {
+                //     stock.add(Float.parseFloat(widthStr));
+                //     stock.add(Float.parseFloat(heightStr));
+                //     stock.add(Float.parseFloat(quantityStr));
+                // }else{
+                for(int i=0;i<Integer.parseInt(quantityStr);i++) {
+                    Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows,grainval);
+                    BOX.add(a);
                 }
+                // }
             } catch (NumberFormatException e) {
                 // Handle invalid input
             }
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 //algorithm goes below
 class stock {
-	private float swidth, sheight;
-	
-	public void setswidth(float swidth) { this.swidth = swidth; }
-	public void setsheight(float sheight) { this.sheight = sheight; }
-	
-	public float getswidth() { return swidth; }
-	public float getslegnth() { return sheight; }
-	
-	public stock(float swidth, float sheight) {
-		setswidth(swidth);
-		setsheight(sheight);
-	}
+    private float swidth, sheight;
+
+    public void setswidth(float swidth) { this.swidth = swidth; }
+    public void setsheight(float sheight) { this.sheight = sheight; }
+
+    public float getswidth() { return swidth; }
+    public float getslegnth() { return sheight; }
+
+    public stock(float swidth, float sheight) {
+        setswidth(swidth);
+        setsheight(sheight);
+    }
 }
 
 class Box2 {
@@ -294,7 +530,7 @@ class Box2 {
     public void setgrain(int grain) { this.grain = grain; }
     public void setID(int ID) {this.ID=ID;}
     public void setStockNum(int StockNum) { this.StockNum = StockNum; }
-    
+
     public float getWidth() { return width; }
     public float getLength() {return length; }
     public float getPosx() { return posx; }
@@ -303,7 +539,7 @@ class Box2 {
     public int getID(){return ID;}
     public int getGrain() { return grain;}
     public int getStockNum() { return StockNum;}
-    
+
     public Box2(float width, float length, float posx, float posy, int ID, int grain) {
         setWidth(width);
         setLength(length);
@@ -321,38 +557,38 @@ class FFDH {
         int i = 0;
         float tempWidth = 0;
         boolean graincare = true;
-                
-        
+
+
         if(graindir != 2) {
-        	for(i=0; i < boxes.size() ; i++) {
-        		if( boxes.get(i).getGrain() == 2 ) {
-        			if(boxes.get(i).getWidth() > boxes.get(i).getLength()) {
-        				tempWidth = boxes.get(i).getWidth();
-        				boxes.get(i).setWidth(boxes.get(i).getLength());
-        				boxes.get(i).setLength(tempWidth);
-        			}
-        		}
-        		else if (graindir != boxes.get(i).getGrain()) {
-        			tempWidth = boxes.get(i).getWidth();
-        			boxes.get(i).setWidth(boxes.get(i).getLength());
-        			boxes.get(i).setLength(tempWidth);
-        		}
-        		else if(graindir == boxes.get(i).getGrain()) {
-        			
-        		}
-        	}
+            for(i=0; i < boxes.size() ; i++) {
+                if( boxes.get(i).getGrain() == 2 ) {
+                    if(boxes.get(i).getWidth() > boxes.get(i).getLength()) {
+                        tempWidth = boxes.get(i).getWidth();
+                        boxes.get(i).setWidth(boxes.get(i).getLength());
+                        boxes.get(i).setLength(tempWidth);
+                    }
+                }
+                else if (graindir != boxes.get(i).getGrain()) {
+                    tempWidth = boxes.get(i).getWidth();
+                    boxes.get(i).setWidth(boxes.get(i).getLength());
+                    boxes.get(i).setLength(tempWidth);
+                }
+                else if(graindir == boxes.get(i).getGrain()) {
+
+                }
+            }
         }
         else {
-        	for(i = 0; i < boxes.size(); i++) {
-        		if(boxes.get(i).getWidth() > boxes.get(i).getLength()) {
-        			tempWidth = boxes.get(i).getWidth();
-        			boxes.get(i).setWidth(boxes.get(i).getLength());
-        			boxes.get(i).setLength(tempWidth);
-        		}
-        	}
+            for(i = 0; i < boxes.size(); i++) {
+                if(boxes.get(i).getWidth() > boxes.get(i).getLength()) {
+                    tempWidth = boxes.get(i).getWidth();
+                    boxes.get(i).setWidth(boxes.get(i).getLength());
+                    boxes.get(i).setLength(tempWidth);
+                }
+            }
         }
-        
-        	
+
+
 
 
         // Iterate through every box to sort them
@@ -372,7 +608,7 @@ class FFDH {
 
         return boxes;
     }
-//setboxeslevel for stocks object arraylists
+    //setboxeslevel for stocks object arraylists
 /*
  * public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, ArratList<stock> stocks, int graindir) {
         float [] runningWidths = new float[boxes.size()];
@@ -390,7 +626,7 @@ class FFDH {
             // Go through every level
             for (int j = 0; j < runningWidths.length; j++) {
                 // Find correct level when current widths of the level + the box are less than or equal to the board width
-                if (((runningWidths[j] + boxes.get(i).getWidth()) <= stocks.get(x).getswidth()) && (boxes.get(i).getWidth() <= stocks.get(x).getswidth()) 
+                if (((runningWidths[j] + boxes.get(i).getWidth()) <= stocks.get(x).getswidth()) && (boxes.get(i).getWidth() <= stocks.get(x).getswidth())
                 		&& (boxes.get(i).getLength() <= stocks.get(x).getsheight())) {
                     // Set level if the box can fit
                     level = j;
@@ -402,15 +638,15 @@ class FFDH {
                     runningWidths[level] += boxes.get(i).getWidth();
                     break;
                 }
-                else if((x < stocks.size()-1) && 
+                else if((x < stocks.size()-1) &&
                 (boxes.get(i).getWidth() > stocks.get(x).getswidth() || boxes.get(i).getLength() > stocks.get(x).getsheight())
-                &&(((boxes.get(i).getWidth()) <= stocks.get(x+1).getswidth()) && 
-                (boxes.get(i).getWidth() <= stocks.get(x+1).getswidth()) 
+                &&(((boxes.get(i).getWidth()) <= stocks.get(x+1).getswidth()) &&
+                (boxes.get(i).getWidth() <= stocks.get(x+1).getswidth())
                 && (boxes.get(i).getLength() <= stocks.get(x+1).getsheight())))
                 {
                 	level = j;
 					x++;
-					
+
                     // Always set the level of the box
                     boxes.get(i).setLevel(level);
 
@@ -422,13 +658,13 @@ class FFDH {
                 	boxes.get(i).setWidth(0);
                     boxes.get(i).setLength(0);
                 }
-                	
+
             }
         }
 
         return boxes;
     }
- * 
+ *
  */
     public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength, int graindir) {
         float [] runningWidths = new float[boxes.size()];
@@ -446,8 +682,8 @@ class FFDH {
             // Go through every level
             for (int j = 0; j < runningWidths.length; j++) {
                 // Find correct level when current widths of the level + the box are less than or equal to the board width
-                if (((runningWidths[j] + boxes.get(i).getWidth()) <= boardWidth) && (boxes.get(i).getWidth() <= boardWidth) 
-                		&& (boxes.get(i).getLength() <= boardLength)) {
+                if (((runningWidths[j] + boxes.get(i).getWidth()) <= boardWidth) && (boxes.get(i).getWidth() <= boardWidth)
+                        && (boxes.get(i).getLength() <= boardLength)) {
                     // Set level if the box can fit
                     level = j;
 
@@ -459,10 +695,10 @@ class FFDH {
                     break;
                 }
                 else if(boxes.get(i).getWidth() > boardWidth || boxes.get(i).getLength() > boardLength) {
-                	boxes.get(i).setWidth(0);
+                    boxes.get(i).setWidth(0);
                     boxes.get(i).setLength(0);
                 }
-                	
+
             }
         }
 
@@ -471,7 +707,7 @@ class FFDH {
 
 // implementation of setboxes position with a stock object arraylist
     /*
-     * 
+     *
      * public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes, ArrayList<stock> stocks) {
         int i = 0, x = 0;
         float tempTallest = boxes.get(0).getLength();
@@ -504,7 +740,7 @@ class FFDH {
                 boxes.get(i).setPosx(0);
                 boxes.get(i).setPosy(tempTallest);
                 tempTallest = boxes.get(i).getLength() + boxes.get(i).getPosy();
-            } 
+            }
             else if((x < stocks.size()-1) &&) {
             x++;
             i--;
@@ -517,10 +753,10 @@ class FFDH {
 
         return boxes;
     }
-     * 
+     *
      */
-    
-    
+
+
     public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes, float boardHeight) {
         int i = 0;
         float tempTallest = boxes.get(0).getLength();
