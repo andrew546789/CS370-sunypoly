@@ -375,7 +375,7 @@ public class NewUI {
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
             String graindir="fork";
-            graindir= (String)grainComboBox.getSelectedItem();
+          //  graindir= (String)grainComboBox.getSelectedItem();
             int grainval=2;
             if(graindir=="↕")grainval=1;
             if(graindir=="←→")grainval=0;
@@ -466,7 +466,7 @@ public class NewUI {
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
             String graindir="fork";
-            graindir= (String)grainComboBox.getSelectedItem();
+           // graindir= (String)grainComboBox.getSelectedItem();
             int grainval=2;
             if(graindir=="↕")grainval=1;
             if(graindir=="←→")grainval=0;
