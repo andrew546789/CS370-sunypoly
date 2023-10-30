@@ -9,6 +9,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 import static java.lang.Math.abs;
 public class NewUI {
+    int currentstock=0;
     int numstockrows=0;
     int numpartrows=0;
     private JFrame frame;
@@ -321,11 +322,11 @@ public class NewUI {
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
             try {
-                scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / stock.get(0), 1.0 * (frame.getHeight()-60) / stock.get(1))) * 0.9;//set scaling mult based off stock
-                FFDH.setBoxesLevels(BOX, stock.get(0), stock.get(1), sBOX.get(0).getGrain());
+                scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / sBOX.get(currentstock).getWidth(), 1.0 * (frame.getHeight()-60) / sBOX.get(currentstock).getLength())) * 0.9;//set scaling mult based off stock
+                FFDH.setBoxesLevels(BOX, sBOX.get(currentstock).getWidth(), sBOX.get(currentstock).getLength(), sBOX.get(currentstock).getGrain());
                 // the first false if for if the grain matters and the second true is for the stock grain directions
-                FFDH.setBoxesPositions(BOX,stock.get(1));
-                Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, stock.get(0)*scaleFactor, stock.get(1)*scaleFactor);
+                FFDH.setBoxesPositions(BOX,sBOX.get(currentstock).getLength());
+                Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, sBOX.get(currentstock).getWidth()*scaleFactor, sBOX.get(currentstock).getLength()*scaleFactor);
                 Graphics2D g2d = (Graphics2D)g.create();
                 g2d.draw(srect);
                 for(int i=0;i<BOX.size();i++) {
