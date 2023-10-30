@@ -9,6 +9,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 import static java.lang.Math.abs;
 public class NewUI {
+    int annoyinggrain=0;
     int currentstock=0;
     int numstockrows=0;
     int numpartrows=0;
@@ -64,8 +65,6 @@ public class NewUI {
 
         addButton2 = new JButton("Add Part");
         eraseButton2 = new JButton("Remove Part");
-        //mgrainButton = new JButton("Grain Matters");
-        //grainButton = new JButton("Horizontal");
         addButton.setPreferredSize(new Dimension(180, 30)); // Set button size
         drawButton.setPreferredSize(new Dimension(370, 30)); // Set button size
         eraseButton.setPreferredSize(new Dimension(180, 30)); // Set button size
@@ -102,7 +101,6 @@ public class NewUI {
                 addRectangleInputPanel2();
             }
         });
-
         // Add buttons to the button panel
         buttonPanel.add(addButton);
         buttonPanel0.add(drawButton);
@@ -118,7 +116,6 @@ public class NewUI {
                 drawRectangles(g);
             }
         };
-
         // Create the main input panel with a vertical BoxLayout
         inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
@@ -151,7 +148,26 @@ public class NewUI {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(leftArrowButton);
         buttonPanel.add(rightArrowButton);
-
+// Create a button for navigating to the next stock
+        rightArrowButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentstock < numstockrows-1) { // Check if there's a next stock
+                    currentstock++; // Increment to the next stock
+                    displayPanel.repaint(); // Redraw the display with the new stock
+                }
+            }
+        });
+        // Create a button for navigating to the previous stock
+        leftArrowButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentstock > 0) { // Check if there's a previous stock
+                    currentstock--; // Decrement to the previous stock
+                    displayPanel.repaint(); // Redraw the display with the new stock
+                }
+            }
+        });
         // Create a JTextField for kerf size input
         JTextField kerfSizeField = new JTextField(1);
         kerfSizeField.setText("0");
@@ -191,17 +207,22 @@ public class NewUI {
         stock.clear();
         BOX.clear();
         scaleFactor=1;
-        for (RectangleInputPanel inputPanel : rectangleInputPanels) {//look through all the data
-            inputPanel.feedRectangle(g);
-            //rows++;
+        boolean first=true;
+        annoyinggrain=0;
+        for (RectangleInputPanel inputPanel : rectangleInputPanels) {//look through all stocks
+                inputPanel.feedRectangle(g);
         }
-        for (RectangleInputPanel2 inputPanel : rectangleInputPanels2) {//look through all the data
-            inputPanel.feedRectangle(g);
+        for (RectangleInputPanel2 inputPanel : rectangleInputPanels2) {//look through all parts
+                inputPanel.feedRectangle(g);
             rows++;
         }
         for (RectangleInputPanel2 inputPanel : rectangleInputPanels2) {
-            inputPanel.drawRectangle(g);//l8r this will only get called once ideally
+            if(first){
+                inputPanel.drawRectangle(g);//only called once now ;)
+                first=false;
+            }
         }
+        first=true;
     }
 
     // Method to clear all rectangles and input panels
@@ -239,7 +260,7 @@ public class NewUI {
         private JTextField heightField;
         private JTextField widthField;
         private JTextField quantityField;
-        private JComboBox<String> grainComboBox;
+        private JComboBox<String> sgrainComboBox;
         public RectangleInputPanel(int number) {
 
             setBorder(BorderFactory.createTitledBorder("Stock:"+number));
@@ -255,11 +276,11 @@ public class NewUI {
             add(new JLabel("Quantity:"));
             add(quantityField);
 
-            grainComboBox = new JComboBox<>(new String[]{"↕","←→","huh?"});
+            sgrainComboBox = new JComboBox<>(new String[]{"↕","←→","huh?"});
             //grainComboBox.setSelectedIndex(0);
-            grainComboBox.setSelectedIndex(1);
+            sgrainComboBox.setSelectedIndex(1);
             //grainComboBox.addActionListener(this);
-            add(grainComboBox);
+            add(sgrainComboBox);
 
             widthField.setPreferredSize(new Dimension(40, 25));
             heightField.setPreferredSize(new Dimension(40, 25));
@@ -270,20 +291,18 @@ public class NewUI {
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
             int grainval=0;
-            grainval= (int)grainComboBox.getSelectedIndex();
+            grainval= (int)sgrainComboBox.getSelectedIndex();
 
             try {
-
-                //if(rows==0) {
-                stock.add(Float.parseFloat(widthStr));
-                stock.add(Float.parseFloat(heightStr));
-                stock.add(Float.parseFloat(quantityStr));
-                //}else{
                 for(int i=0;i<Integer.parseInt(quantityStr);i++) {
                     Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows,grainval);
                     sBOX.add(a);
-                }
 
+                    //System.out.println("stock1 "+grainval+"stock1again "+sBOX.get(i).getGrain());
+                    //System.out.println("currentstock:"+currentstock);
+                }
+                sBOX.get(annoyinggrain).setgrain(grainval);//fix for the really annoying grain bug?
+                annoyinggrain++;
             } catch (NumberFormatException e) {
                 // Handle invalid input
             }
@@ -322,6 +341,7 @@ public class NewUI {
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
             try {
+                System.out.println("grainval"+sBOX.get(0).getGrain());
                 scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / sBOX.get(currentstock).getWidth(), 1.0 * (frame.getHeight()-60) / sBOX.get(currentstock).getLength())) * 0.9;//set scaling mult based off stock
                 FFDH.setBoxesLevels(BOX, sBOX.get(currentstock).getWidth(), sBOX.get(currentstock).getLength(), sBOX.get(currentstock).getGrain());
                 // the first false if for if the grain matters and the second true is for the stock grain directions
@@ -350,7 +370,7 @@ public class NewUI {
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
             int grainval=0;
-            grainval= (int)grainComboBox.getSelectedIndex();
+             grainval= (int)grainComboBox.getSelectedIndex();
 
             try {
 
