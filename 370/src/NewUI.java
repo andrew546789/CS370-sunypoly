@@ -9,6 +9,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 import static java.lang.Math.abs;
 public class NewUI {
+    int annoyinggrain=0;
     int currentstock=0;
     int numstockrows=0;
     int numpartrows=0;
@@ -147,7 +148,26 @@ public class NewUI {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(leftArrowButton);
         buttonPanel.add(rightArrowButton);
-
+// Create a button for navigating to the next stock
+        rightArrowButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentstock < annoyinggrain-1) { // Check if there's a next stock
+                    currentstock++; // Increment to the next stock
+                    displayPanel.repaint(); // Redraw the display with the new stock
+                }
+            }
+        });
+        // Create a button for navigating to the previous stock
+        leftArrowButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentstock > 0) { // Check if there's a previous stock
+                    currentstock--; // Decrement to the previous stock
+                    displayPanel.repaint(); // Redraw the display with the new stock
+                }
+            }
+        });
         // Create a JTextField for kerf size input
         JTextField kerfSizeField = new JTextField(1);
         kerfSizeField.setText("0");
@@ -188,6 +208,7 @@ public class NewUI {
         BOX.clear();
         scaleFactor=1;
         boolean first=true;
+        annoyinggrain=0;
         for (RectangleInputPanel inputPanel : rectangleInputPanels) {//look through all stocks
                 inputPanel.feedRectangle(g);
         }
@@ -271,11 +292,16 @@ public class NewUI {
             String quantityStr = quantityField.getText();
             int grainval=0;
             grainval= (int)sgrainComboBox.getSelectedIndex();
+
             try {
                 for(int i=0;i<Integer.parseInt(quantityStr);i++) {
                     Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows,grainval);
                     sBOX.add(a);
-                    sBOX.get(i).setgrain(grainval);//fix for grain?
+
+                    //System.out.println("stock1 "+grainval+"stock1again "+sBOX.get(i).getGrain());
+                    //System.out.println("currentstock:"+currentstock);
+                    sBOX.get(annoyinggrain).setgrain(grainval);//fix for the really annoying grain bug?
+                    annoyinggrain++;
                 }
 
             } catch (NumberFormatException e) {
@@ -316,8 +342,9 @@ public class NewUI {
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
             try {
+               // System.out.println("grainval"+sBOX.get(0).getGrain());
                 scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / sBOX.get(currentstock).getWidth(), 1.0 * (frame.getHeight()-60) / sBOX.get(currentstock).getLength())) * 0.9;//set scaling mult based off stock
-                FFDH.setBoxesLevels(BOX, sBOX.get(currentstock).getWidth(), sBOX.get(currentstock).getLength(), sBOX.get(currentstock).getGrain(), kerf);
+                FFDH.setBoxesLevels(BOX, sBOX.get(currentstock).getWidth(), sBOX.get(currentstock).getLength(), sBOX.get(currentstock).getGrain());
                 // the first false if for if the grain matters and the second true is for the stock grain directions
                 FFDH.setBoxesPositions(BOX,sBOX.get(currentstock).getLength());
                 Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, sBOX.get(currentstock).getWidth()*scaleFactor, sBOX.get(currentstock).getLength()*scaleFactor);
@@ -334,6 +361,8 @@ public class NewUI {
                     if((BOX.get(i).getLength()*scaleFactor)>15&&20<(BOX.get(i).getWidth()*scaleFactor)) {//only put a part display if you can see the part
                         g2d.drawString("Prt" + BOX.get(i).getID(), (int) (BOX.get(i).getPosx() * scaleFactor + 12), (int) (BOX.get(i).getPosy() * scaleFactor + 22));// part label on each part
                     }
+                    g2d.drawString("Stock: " + (currentstock+1)+"/"+annoyinggrain,frame.getWidth()-480, frame.getHeight()-90);
+                    sBOX.clear();
                 }
             } catch (NumberFormatException e) {
                 // Handle invalid input
@@ -521,17 +550,11 @@ class FFDH {
     }
  *
  */
-    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength, int graindir, float kerf) {
+    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength, int graindir) {
         float [] runningWidths = new float[boxes.size()];
 
         int i, level = 0, x=0;
 
-        for(i=0; i<boxes.size();i++) {
-        	boxes.get(i).setLength(boxes.get(i).getLength()+ kerf);
-        	boxes.get(i).setWidth(boxes.get(i).getWidth() + kerf);
-        	
-        }
-        
         // Get ordered boxes
         boxes = simpleBoxSort(boxes, graindir);
 
@@ -655,7 +678,27 @@ class FFDH {
                 boxes.get(i).setLength(0);
             }
         }
-        
+
         return boxes;
+    }
+
+    public static void printBoxes(ArrayList<Box2> boxes, float boardWidth) {
+        int i;
+
+        // Iterate through every box to print their respective values
+        for(i = 0; i < boxes.size(); i++) {
+            System.out.println(boxes.get(i).getWidth() + "w, " + boxes.get(i).getLength() +
+                    "l: " + boxes.get(i).getPosx() + "x, " + boxes.get(i).getPosy() + "y: " + boxes.get(i).getLevel());
+        }
+
+        return;
+    }
+
+    public static void main(String[] args) {
+        Random rand = new Random();
+        int i = 0;
+        float boardWidth = 100;
+        float boardLength = 200;
+        ArrayList<Box2> sqrs = new ArrayList<>();
     }
 }
