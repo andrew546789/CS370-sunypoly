@@ -317,7 +317,7 @@ public class NewUI {
             String quantityStr = quantityField.getText();
             try {
                 scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / sBOX.get(currentstock).getWidth(), 1.0 * (frame.getHeight()-60) / sBOX.get(currentstock).getLength())) * 0.9;//set scaling mult based off stock
-                FFDH.setBoxesLevels(BOX, sBOX.get(currentstock).getWidth(), sBOX.get(currentstock).getLength(), sBOX.get(currentstock).getGrain());
+                FFDH.setBoxesLevels(BOX, sBOX.get(currentstock).getWidth(), sBOX.get(currentstock).getLength(), sBOX.get(currentstock).getGrain(), kerf);
                 // the first false if for if the grain matters and the second true is for the stock grain directions
                 FFDH.setBoxesPositions(BOX,sBOX.get(currentstock).getLength());
                 Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, sBOX.get(currentstock).getWidth()*scaleFactor, sBOX.get(currentstock).getLength()*scaleFactor);
@@ -655,27 +655,7 @@ class FFDH {
                 boxes.get(i).setLength(0);
             }
         }
-
+        
         return boxes;
-    }
-
-    public static void printBoxes(ArrayList<Box2> boxes, float boardWidth) {
-        int i;
-
-        // Iterate through every box to print their respective values
-        for(i = 0; i < boxes.size(); i++) {
-            System.out.println(boxes.get(i).getWidth() + "w, " + boxes.get(i).getLength() +
-                    "l: " + boxes.get(i).getPosx() + "x, " + boxes.get(i).getPosy() + "y: " + boxes.get(i).getLevel());
-        }
-
-        return;
-    }
-
-    public static void main(String[] args) {
-        Random rand = new Random();
-        int i = 0;
-        float boardWidth = 100;
-        float boardLength = 200;
-        ArrayList<Box2> sqrs = new ArrayList<>();
     }
 }
