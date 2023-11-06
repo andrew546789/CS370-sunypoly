@@ -550,11 +550,16 @@ class FFDH {
     }
  *
  */
-    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength, int graindir) {
+    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength, int graindir, float kerf) {
         float [] runningWidths = new float[boxes.size()];
 
         int i, level = 0, x=0;
 
+        for(i=0;i<boxes.size();i++) {
+        	boxes.get(i).setLength(boxes.get(i).getLength()+kerf);
+        	boxes.get(i).setWidth(boxes.get(i).getWidth()+kerf);
+        }
+        
         // Get ordered boxes
         boxes = simpleBoxSort(boxes, graindir);
 
