@@ -16,6 +16,7 @@ public class NewUI {
     private JFrame frame;
     private JPanel inputPanel; // Main panel for user inputs
     private JPanel buttonPanel0; // Panel for calculate
+    private JPanel kerfPanel; // Panel for kerf
     private JPanel buttonPanel; // Panel for stock buttons
     private JPanel buttonPanel2; // Panel for part buttons
     private JPanel displayPanel; // Panel for displaying rectangles
@@ -29,7 +30,6 @@ public class NewUI {
     private List<RectangleInputPanel2> rectangleInputPanels2 = new ArrayList<>();//part
     int rows=1;
     float kerf=0f;
-    ArrayList<Float> stock = new ArrayList<Float>();
     ArrayList<Box2> sBOX = new ArrayList<Box2>();
     ArrayList<Box2> BOX = new ArrayList<Box2>();
     double scaleFactor;
@@ -145,9 +145,9 @@ public class NewUI {
         JButton rightArrowButton = new JButton("→");
 
         // Create a panel for the buttons and add them to the frame directly
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(leftArrowButton);
-        buttonPanel.add(rightArrowButton);
+        JPanel buttonPanel = new JPanel(new GridLayout());
+        buttonPanel.add(leftArrowButton,BorderLayout.WEST);
+        buttonPanel.add(rightArrowButton,BorderLayout.EAST);
 // Create a button for navigating to the next stock
         rightArrowButton.addActionListener(new ActionListener() {
             @Override
@@ -168,17 +168,14 @@ public class NewUI {
                 }
             }
         });
+        kerfPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         // Create a JTextField for kerf size input
-        JTextField kerfSizeField = new JTextField(1);
-        kerfSizeField.setText("0");
-        // Create a panel for the buttons and kerf input, and add them to the frame
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.add(buttonPanel, BorderLayout.EAST);
-        bottomPanel.add(new JLabel("Kerf Size:"), BorderLayout.WEST);
-        bottomPanel.add(kerfSizeField, BorderLayout.CENTER);
-
-        frame.add(bottomPanel, BorderLayout.SOUTH);
-
+        JTextField kerfSizeField = new JTextField("0");
+        kerfPanel.add(new JLabel("Kerf Size:"),BorderLayout.WEST);
+        kerfPanel.add(kerfSizeField,BorderLayout.CENTER);
+       kerfSizeField.setPreferredSize(new Dimension(280, 25));
+        frame.add(buttonPanel,BorderLayout.SOUTH);
+        inputPanel.add(kerfPanel);
         // Make the frame visible
         frame.setVisible(true);
 
@@ -204,16 +201,16 @@ public class NewUI {
     private void drawRectangles(Graphics g) {
         //set height,width,quantity arrays to null
         rows=1;
-        stock.clear();
+        sBOX.clear();
         BOX.clear();
         scaleFactor=1;
         boolean first=true;
         annoyinggrain=0;
         for (RectangleInputPanel inputPanel : rectangleInputPanels) {//look through all stocks
-                inputPanel.feedRectangle(g);
+            inputPanel.feedRectangle(g);
         }
         for (RectangleInputPanel2 inputPanel : rectangleInputPanels2) {//look through all parts
-                inputPanel.feedRectangle(g);
+            inputPanel.feedRectangle(g);
             rows++;
         }
         for (RectangleInputPanel2 inputPanel : rectangleInputPanels2) {
@@ -229,7 +226,7 @@ public class NewUI {
     private void clearRectangles() {
         if (numstockrows>0) {
             rectangleInputPanels.remove(rectangleInputPanels.size() - 1);
-            inputPanel.remove(inputPanel.getComponentCount() - (2+numpartrows));//add # of parts to 2 to fix
+            inputPanel.remove(inputPanel.getComponentCount() - (3+numpartrows));//add # of parts to 2 to fix
             inputPanel.revalidate();
             inputPanel.repaint();
             displayPanel.repaint();
@@ -239,7 +236,7 @@ public class NewUI {
     private void clearRectangles2() {
         if (numpartrows>0) {
             rectangleInputPanels2.remove(rectangleInputPanels2.size() - 1);
-            inputPanel.remove(inputPanel.getComponentCount() - 1);
+            inputPanel.remove(inputPanel.getComponentCount() - 2);
             inputPanel.revalidate();
             inputPanel.repaint();
             displayPanel.repaint();
@@ -342,7 +339,7 @@ public class NewUI {
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
             try {
-               // System.out.println("grainval"+sBOX.get(0).getGrain());
+                // System.out.println("grainval"+sBOX.get(0).getGrain());
                 scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / sBOX.get(currentstock).getWidth(), 1.0 * (frame.getHeight()-60) / sBOX.get(currentstock).getLength())) * 0.9;//set scaling mult based off stock
                 FFDH.setBoxesLevels(BOX, sBOX.get(currentstock).getWidth(), sBOX.get(currentstock).getLength(), sBOX.get(currentstock).getGrain());
                 // the first false if for if the grain matters and the second true is for the stock grain directions
@@ -362,7 +359,6 @@ public class NewUI {
                         g2d.drawString("Prt" + BOX.get(i).getID(), (int) (BOX.get(i).getPosx() * scaleFactor + 12), (int) (BOX.get(i).getPosy() * scaleFactor + 22));// part label on each part
                     }
                     g2d.drawString("Stock: " + (currentstock+1)+"/"+annoyinggrain,frame.getWidth()-480, frame.getHeight()-90);
-                    sBOX.clear();
                 }
             } catch (NumberFormatException e) {
                 // Handle invalid input
@@ -373,10 +369,9 @@ public class NewUI {
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
             int grainval=0;
-             grainval= (int)grainComboBox.getSelectedIndex();
+            grainval= (int)grainComboBox.getSelectedIndex();
 
             try {
-
                 for(int i=0;i<Integer.parseInt(quantityStr);i++) {
                     Box2 a = new Box2(Float.parseFloat(widthStr), Float.parseFloat(heightStr), 0, 0,rows,grainval);
                     BOX.add(a);
@@ -550,16 +545,11 @@ class FFDH {
     }
  *
  */
-    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength, int graindir, float kerf) {
+    public static ArrayList<Box2> setBoxesLevels(ArrayList<Box2> boxes, float boardWidth, float boardLength, int graindir) {
         float [] runningWidths = new float[boxes.size()];
 
         int i, level = 0, x=0;
 
-        for(i=0;i<boxes.size();i++) {
-        	boxes.get(i).setLength(boxes.get(i).getLength()+kerf);
-        	boxes.get(i).setWidth(boxes.get(i).getWidth()+kerf);
-        }
-        
         // Get ordered boxes
         boxes = simpleBoxSort(boxes, graindir);
 
