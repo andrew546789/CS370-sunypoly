@@ -148,6 +148,8 @@ public class NewUI {
         // Create buttons for the right panel
         JButton leftArrowButton = new JButton("←");
         JButton rightArrowButton = new JButton("→");
+        // Create a button
+        JButton screenshotButton = new JButton("Export");
 
         // Create a panel for the buttons and add them to the frame directly
         JPanel buttonPanel = new JPanel(new GridLayout());
@@ -173,6 +175,15 @@ public class NewUI {
                 }
             }
         });
+
+        // Add an ActionListener to the button
+        screenshotButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                takeScreenshot();
+            }
+        });
+
         kerfPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         // Create a JTextField for kerf size input
         JTextField kerfSizeField = new JTextField("0");
@@ -181,8 +192,30 @@ public class NewUI {
         kerfSizeField.setPreferredSize(new Dimension(280, 25));
         frame.add(buttonPanel,BorderLayout.SOUTH);
         inputPanel.add(kerfPanel);
+        // Add the button to your frame
+        buttonPanel.add(screenshotButton,BorderLayout.EAST);
         // Make the frame visible
         frame.setVisible(true);
+
+    }
+
+    // New method to handle screenshot logic
+    public void takeScreenshot() {
+        try{
+            Robot r = new Robot();
+
+            // It saves screenshot to desired path
+            String path = "C:Shot.jpg";
+
+            // Used to get ScreenSize and capture image
+            Rectangle capture = new Rectangle(frame.getX(),frame.getY(),frame.getWidth(),frame.getHeight());
+            BufferedImage Image = r.createScreenCapture(capture);
+            ImageIO.write(Image, "jpg", new File(path));
+            System.out.println("Screenshot saved");
+        }
+        catch (AWTException | IOException ex) {
+            System.out.println(ex);
+        }
 
     }
     // Method to add a new RectangleInputPanel to the input panel
@@ -338,6 +371,7 @@ public class NewUI {
             heightField.setPreferredSize(new Dimension(40, 25));
             quantityField.setPreferredSize(new Dimension(40, 25));
         }
+
         // Method to draw a rectangle based on user input
         public void drawRectangle(Graphics g) {//currently gets called once per row, but once algorithm is in we might use it differently
             String heightStr = heightField.getText();
@@ -379,28 +413,15 @@ public class NewUI {
                     //}
 
                     g2d.drawString("Stock: " + (currentstock+1)+"/"+annoyinggrain,frame.getWidth()-480, frame.getHeight()-90);
-                    //screenshot stuff?
-                    try{
-                    Robot r = new Robot();
 
-                    // It saves screenshot to desired path
-                    String path = "C:Shot.jpg";
 
-                    // Used to get ScreenSize and capture image
-                    Rectangle capture = new Rectangle(frame.getX(),frame.getY(),frame.getWidth(),frame.getHeight());
-                    BufferedImage Image = r.createScreenCapture(capture);
-                    ImageIO.write(Image, "jpg", new File(path));
-                    System.out.println("Screenshot saved");
-                    }
-                    catch (AWTException | IOException ex) {
-                        System.out.println(ex);
-                    }
 
                 }
             } catch (NumberFormatException e) {
                 // Handle invalid input
             }
         }
+
         public void feedRectangle(Graphics g) {
             String heightStr = heightField.getText();
             String widthStr = widthField.getText();
