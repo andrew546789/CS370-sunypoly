@@ -71,10 +71,11 @@ public class NewUI {
         addButton2 = new JButton("Add Part");
         eraseButton2 = new JButton("Remove Part");
         addButton.setPreferredSize(new Dimension(180, 30)); // Set button size
-        drawButton.setPreferredSize(new Dimension(370, 30)); // Set button size
+        drawButton.setPreferredSize(new Dimension(180, 30)); // Set button size
         eraseButton.setPreferredSize(new Dimension(180, 30)); // Set button size
         addButton2.setPreferredSize(new Dimension(180, 30)); // Set button size
         eraseButton2.setPreferredSize(new Dimension(180, 30)); // Set button size
+
         // Initialize the color palette with 10 colors
         partColors = generateColorPalette(10);
         // Add action listeners to button
@@ -153,6 +154,8 @@ public class NewUI {
 
         // Create a panel for the buttons and add them to the frame directly
         JPanel buttonPanel = new JPanel(new GridLayout());
+        buttonPanel0.add(screenshotButton);
+        screenshotButton.setPreferredSize(new Dimension(180, 30)); // Set button size
         buttonPanel.add(leftArrowButton,BorderLayout.WEST);
         buttonPanel.add(rightArrowButton,BorderLayout.EAST);
 // Create a button for navigating to the next stock
@@ -193,7 +196,7 @@ public class NewUI {
         frame.add(buttonPanel,BorderLayout.SOUTH);
         inputPanel.add(kerfPanel);
         // Add the button to your frame
-        buttonPanel.add(screenshotButton,BorderLayout.EAST);
+
         // Make the frame visible
         frame.setVisible(true);
 
