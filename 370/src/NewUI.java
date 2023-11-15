@@ -12,6 +12,7 @@ import java.lang.reflect.Array;
 import java.io.IOException;
 import java.util.*;
 import java.awt.geom.AffineTransform;
+import java.util.regex.Pattern;
 import static java.lang.Math.abs;
 public class NewUI {
     int annoyinggrain=0;
@@ -374,6 +375,18 @@ public class NewUI {
             widthField.setPreferredSize(new Dimension(40, 25));
             heightField.setPreferredSize(new Dimension(40, 25));
             quantityField.setPreferredSize(new Dimension(40, 25));
+            // Validate initial values
+            if (!isValidInput(heightField.getText()) || !isValidInput(widthField.getText()) || !isValidInput(quantityField.getText())) {
+                JOptionPane.showMessageDialog(this, "Invalid Stock values. Please enter only numbers and decimals.",
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        //Error check for letters & symbols & or fractions(not acceptable); only acceptable numbers & decimal
+        private boolean isValidInput(String input) {
+            // Use a regular expression to check if the input contains only numbers and decimals
+            String regex = "^[0-9]+(\\.[0-9]+)?$";
+            return Pattern.matches(regex, input);
         }
 
         // Method to draw a rectangle based on user input
@@ -381,25 +394,30 @@ public class NewUI {
             String heightStr = heightField.getText();
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
+            if (!isValidInput(heightStr) || !isValidInput(widthStr) || !isValidInput(quantityStr)) {
+                JOptionPane.showMessageDialog(this, "Invalid Part input. Please enter only numbers and decimals.",
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
+                return;  // Exit the method if input is invalid
+            }
             try {
                 // System.out.println("kerf"+kerf);
-                scaleFactor = (Math.min(1.0 * (frame.getWidth()-410) / sBOX.get(currentstock).getWidth(), 1.0 * (frame.getHeight()-60) / sBOX.get(currentstock).getLength())) * 0.9;//set scaling mult based off stock
-                FFDH.setBoxesLevels(BOX, sBOX.get(currentstock).getWidth(), sBOX.get(currentstock).getLength(), sBOX.get(currentstock).getGrain(),kerf);
+                scaleFactor = (Math.min(1.0 * (frame.getWidth() - 410) / sBOX.get(currentstock).getWidth(), 1.0 * (frame.getHeight() - 60) / sBOX.get(currentstock).getLength())) * 0.9;//set scaling mult based off stock
+                FFDH.setBoxesLevels(BOX, sBOX.get(currentstock).getWidth(), sBOX.get(currentstock).getLength(), sBOX.get(currentstock).getGrain(), kerf);
                 // the first false if for if the grain matters and the second true is for the stock grain directions
-                FFDH.setBoxesPositions(BOX,sBOX.get(currentstock).getLength());
-                Rectangle2D.Double srect = new Rectangle2D.Double(10, 20, sBOX.get(currentstock).getWidth()*scaleFactor, sBOX.get(currentstock).getLength()*scaleFactor);
-                Graphics2D g2d = (Graphics2D)g.create();
+                FFDH.setBoxesPositions(BOX, sBOX.get(currentstock).getLength());
+                Rectangle2D.Double srect = new Rectangle2D.Double(10, 20, sBOX.get(currentstock).getWidth() * scaleFactor, sBOX.get(currentstock).getLength() * scaleFactor);
+                Graphics2D g2d = (Graphics2D) g.create();
                 g2d.draw(srect);
-                for(int i=0;i<BOX.size();i++) {
+                for (int i = 0; i < BOX.size(); i++) {
                     Color yes[];
-                    yes=generateColorPalette(rows);
-                    Rectangle2D.Double prect = new Rectangle2D.Double((BOX.get(i).getPosx()*scaleFactor+10), (BOX.get(i).getPosy()*scaleFactor+20), (BOX.get(i).getWidth()*scaleFactor), (BOX.get(i).getLength()*scaleFactor));
-                    Rectangle2D.Double prect2 = new Rectangle2D.Double((BOX.get(i).getPosx()*scaleFactor+10), (BOX.get(i).getPosy()*scaleFactor+20), ((BOX.get(i).getWidth()-kerf)*scaleFactor), ((BOX.get(i).getLength()-kerf)*scaleFactor));
+                    yes = generateColorPalette(rows);
+                    Rectangle2D.Double prect = new Rectangle2D.Double((BOX.get(i).getPosx() * scaleFactor + 10), (BOX.get(i).getPosy() * scaleFactor + 20), (BOX.get(i).getWidth() * scaleFactor), (BOX.get(i).getLength() * scaleFactor));
+                    Rectangle2D.Double prect2 = new Rectangle2D.Double((BOX.get(i).getPosx() * scaleFactor + 10), (BOX.get(i).getPosy() * scaleFactor + 20), ((BOX.get(i).getWidth() - kerf) * scaleFactor), ((BOX.get(i).getLength() - kerf) * scaleFactor));
                     g2d.setColor(yes[BOX.get(i).getID()]);
                     g2d.fill(prect);
                     g2d.setColor(Color.black);
                     g2d.draw(prect2);
-                    if((BOX.get(i).getLength()*scaleFactor)>15&&20<(BOX.get(i).getWidth()*scaleFactor)) {//only put a part display if you can see the part
+                    if ((BOX.get(i).getLength() * scaleFactor) > 15 && 20 < (BOX.get(i).getWidth() * scaleFactor)) {//only put a part display if you can see the part
                         g2d.drawString("Prt" + BOX.get(i).getID(), (int) (BOX.get(i).getPosx() * scaleFactor + 12), (int) (BOX.get(i).getPosy() * scaleFactor + 32));// part label on each part
                     }
                 }
@@ -408,18 +426,20 @@ public class NewUI {
                 affineTransform.rotate(Math.toRadians(90), 0, 0);
                 Font rotatedFont = font.deriveFont(affineTransform);
 
-                g2d.drawString("Width:" + sBOX.get(currentstock).getWidth(), (int) ((sBOX.get(currentstock).getPosx()+sBOX.get(currentstock).getWidth()/2) * scaleFactor-10), (int) (sBOX.get(currentstock).getPosy() * scaleFactor+14));
+                g2d.drawString("Width:" + sBOX.get(currentstock).getWidth(), (int) ((sBOX.get(currentstock).getPosx() + sBOX.get(currentstock).getWidth() / 2) * scaleFactor - 10), (int) (sBOX.get(currentstock).getPosy() * scaleFactor + 14));
                 g2d.setFont(rotatedFont);
-                g2d.drawString("Height:" + sBOX.get(currentstock).getLength(), (int) (sBOX.get(currentstock).getPosx()+sBOX.get(currentstock).getWidth() * scaleFactor+20), (int) ((sBOX.get(currentstock).getPosy()+sBOX.get(currentstock).getLength()/2 )* scaleFactor-10));
+                g2d.drawString("Height:" + sBOX.get(currentstock).getLength(), (int) (sBOX.get(currentstock).getPosx() + sBOX.get(currentstock).getWidth() * scaleFactor + 20), (int) ((sBOX.get(currentstock).getPosy() + sBOX.get(currentstock).getLength() / 2) * scaleFactor - 10));
                 g2d.setFont(font);
                 //for (int z=0;i<rows;z++) {//color the part rows (for some reason breaks display)
                 //    rectangleInputPanels2.get(z).setBackground(yes[z]);
                 //}
 
-                g2d.drawString("Stock: " + (currentstock+1)+"/"+annoyinggrain,frame.getWidth()-480, frame.getHeight()-90);
+                g2d.drawString("Stock: " + (currentstock + 1) + "/" + annoyinggrain, frame.getWidth() - 480, frame.getHeight() - 90);
             } catch (NumberFormatException e) {
                 // Handle invalid input
             }
+            JOptionPane.showMessageDialog(this, "Invalid input. Please enter valid numbers for height, width, and quantity.",
+                    "Input Error", JOptionPane.ERROR_MESSAGE);
         }
 
         public void feedRectangle(Graphics g) {
