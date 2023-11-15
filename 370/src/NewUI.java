@@ -189,7 +189,7 @@ public class NewUI {
 
         kerfPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         // Create a JTextField for kerf size input
-        JTextField kerfSizeField = new JTextField("0");
+        kerfSizeField = new JTextField("0");
         kerfPanel.add(new JLabel("Kerf Size:"),BorderLayout.WEST);
         kerfPanel.add(kerfSizeField,BorderLayout.CENTER);
         kerfSizeField.setPreferredSize(new Dimension(280, 25));
@@ -328,6 +328,7 @@ public class NewUI {
             String heightStr = heightField.getText();
             String widthStr = widthField.getText();
             String quantityStr = quantityField.getText();
+            kerf = Float.parseFloat(kerfSizeField.getText());
             int grainval=0;
             grainval= (int)sgrainComboBox.getSelectedIndex();
 
@@ -386,40 +387,36 @@ public class NewUI {
                 FFDH.setBoxesLevels(BOX, sBOX.get(currentstock).getWidth(), sBOX.get(currentstock).getLength(), sBOX.get(currentstock).getGrain(),kerf);
                 // the first false if for if the grain matters and the second true is for the stock grain directions
                 FFDH.setBoxesPositions(BOX,sBOX.get(currentstock).getLength());
-                Rectangle2D.Double srect = new Rectangle2D.Double(10, 10, sBOX.get(currentstock).getWidth()*scaleFactor, sBOX.get(currentstock).getLength()*scaleFactor);
+                Rectangle2D.Double srect = new Rectangle2D.Double(10, 20, sBOX.get(currentstock).getWidth()*scaleFactor, sBOX.get(currentstock).getLength()*scaleFactor);
                 Graphics2D g2d = (Graphics2D)g.create();
                 g2d.draw(srect);
                 for(int i=0;i<BOX.size();i++) {
                     Color yes[];
                     yes=generateColorPalette(rows);
-                    Rectangle2D.Double prect = new Rectangle2D.Double((BOX.get(i).getPosx()*scaleFactor+10), (BOX.get(i).getPosy()*scaleFactor+10), (BOX.get(i).getWidth()*scaleFactor), (BOX.get(i).getLength()*scaleFactor));
+                    Rectangle2D.Double prect = new Rectangle2D.Double((BOX.get(i).getPosx()*scaleFactor+10), (BOX.get(i).getPosy()*scaleFactor+20), (BOX.get(i).getWidth()*scaleFactor), (BOX.get(i).getLength()*scaleFactor));
+                    Rectangle2D.Double prect2 = new Rectangle2D.Double((BOX.get(i).getPosx()*scaleFactor+10), (BOX.get(i).getPosy()*scaleFactor+20), ((BOX.get(i).getWidth()-kerf)*scaleFactor), ((BOX.get(i).getLength()-kerf)*scaleFactor));
                     g2d.setColor(yes[BOX.get(i).getID()]);
                     g2d.fill(prect);
                     g2d.setColor(Color.black);
-                    g2d.draw(prect);
+                    g2d.draw(prect2);
                     if((BOX.get(i).getLength()*scaleFactor)>15&&20<(BOX.get(i).getWidth()*scaleFactor)) {//only put a part display if you can see the part
-                        g2d.drawString("Prt" + BOX.get(i).getID(), (int) (BOX.get(i).getPosx() * scaleFactor + 12), (int) (BOX.get(i).getPosy() * scaleFactor + 22));// part label on each part
+                        g2d.drawString("Prt" + BOX.get(i).getID(), (int) (BOX.get(i).getPosx() * scaleFactor + 12), (int) (BOX.get(i).getPosy() * scaleFactor + 32));// part label on each part
                     }
-                    //put label for stock height and width
-                    //g2d.rotate(Math.PI/2);
-                    Font font = new Font(null, Font.PLAIN, 10);
-                    AffineTransform affineTransform = new AffineTransform();
-                    affineTransform.rotate(Math.toRadians(90), 0, 0);
-                    Font rotatedFont = font.deriveFont(affineTransform);
-
-                    g2d.drawString("Width:" + sBOX.get(i).getWidth(), (int) ((sBOX.get(currentstock).getPosx()+sBOX.get(currentstock).getWidth()/2) * scaleFactor-10), (int) (sBOX.get(currentstock).getPosy() * scaleFactor+20));
-                    g2d.setFont(rotatedFont);
-                    g2d.drawString("Height:" + sBOX.get(i).getLength(), (int) (sBOX.get(currentstock).getPosx()+sBOX.get(currentstock).getWidth() * scaleFactor+20), (int) ((sBOX.get(currentstock).getPosy()+sBOX.get(currentstock).getLength()/2 )* scaleFactor-10));
-                    g2d.setFont(font);
-                    //for (int z=0;i<rows;z++) {//color the part rows (for some reason breaks display)
-                    //    rectangleInputPanels2.get(z).setBackground(yes[z]);
-                    //}
-
-                    g2d.drawString("Stock: " + (currentstock+1)+"/"+annoyinggrain,frame.getWidth()-480, frame.getHeight()-90);
-
-
-
                 }
+                Font font = new Font(null, Font.PLAIN, 10);
+                AffineTransform affineTransform = new AffineTransform();
+                affineTransform.rotate(Math.toRadians(90), 0, 0);
+                Font rotatedFont = font.deriveFont(affineTransform);
+
+                g2d.drawString("Width:" + sBOX.get(currentstock).getWidth(), (int) ((sBOX.get(currentstock).getPosx()+sBOX.get(currentstock).getWidth()/2) * scaleFactor-10), (int) (sBOX.get(currentstock).getPosy() * scaleFactor+14));
+                g2d.setFont(rotatedFont);
+                g2d.drawString("Height:" + sBOX.get(currentstock).getLength(), (int) (sBOX.get(currentstock).getPosx()+sBOX.get(currentstock).getWidth() * scaleFactor+20), (int) ((sBOX.get(currentstock).getPosy()+sBOX.get(currentstock).getLength()/2 )* scaleFactor-10));
+                g2d.setFont(font);
+                //for (int z=0;i<rows;z++) {//color the part rows (for some reason breaks display)
+                //    rectangleInputPanels2.get(z).setBackground(yes[z]);
+                //}
+
+                g2d.drawString("Stock: " + (currentstock+1)+"/"+annoyinggrain,frame.getWidth()-480, frame.getHeight()-90);
             } catch (NumberFormatException e) {
                 // Handle invalid input
             }
