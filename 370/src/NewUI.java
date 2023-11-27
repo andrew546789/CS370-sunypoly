@@ -405,9 +405,9 @@ public class NewUI {
                 Rectangle2D.Double srect = new Rectangle2D.Double(10, 20, sBOX.get(currentstock).getWidth()*scaleFactor, sBOX.get(currentstock).getLength()*scaleFactor);
                 Graphics2D g2d = (Graphics2D)g.create();
                 g2d.draw(srect);
+                Color yes[];
+                yes=generateColorPalette(rows);
                 for(int i=0;i<BOX.size();i++) {
-                    Color yes[];
-                    yes=generateColorPalette(rows);
                     Rectangle2D.Double prect = new Rectangle2D.Double((BOX.get(i).getPosx()*scaleFactor+10), (BOX.get(i).getPosy()*scaleFactor+20), (BOX.get(i).getWidth()*scaleFactor), (BOX.get(i).getLength()*scaleFactor));
                     Rectangle2D.Double prect2 = new Rectangle2D.Double((BOX.get(i).getPosx()*scaleFactor+10), (BOX.get(i).getPosy()*scaleFactor+20), ((BOX.get(i).getWidth()-kerf)*scaleFactor), ((BOX.get(i).getLength()-kerf)*scaleFactor));
                     g2d.setColor(Color.darkGray);
@@ -419,6 +419,7 @@ public class NewUI {
                     if(((BOX.get(i).getLength()-kerf)*scaleFactor)>15&&20<((BOX.get(i).getWidth()-kerf)*scaleFactor)) {//only put a part display if you can see the part
                         g2d.drawString("Prt" + BOX.get(i).getID(), (int) (BOX.get(i).getPosx() * scaleFactor + 12), (int) (BOX.get(i).getPosy() * scaleFactor + 32));// part label on each part
                     }
+                    rectangleInputPanels2.get(BOX.get(i).getID()-1).setBackground(yes[BOX.get(i).getID()]);
                 }
                 Font font = new Font(null, Font.PLAIN, 10);
                 AffineTransform affineTransform = new AffineTransform();
@@ -429,9 +430,7 @@ public class NewUI {
                 g2d.setFont(rotatedFont);
                 g2d.drawString("Height:" + sBOX.get(currentstock).getLength(), (int) (sBOX.get(currentstock).getPosx()+sBOX.get(currentstock).getWidth() * scaleFactor+20), (int) ((sBOX.get(currentstock).getPosy()+sBOX.get(currentstock).getLength()/2 )* scaleFactor-10));
                 g2d.setFont(font);
-                //for (int z=0;i<rows;z++) {//color the part rows (for some reason breaks display)
-                //    rectangleInputPanels2.get(z).setBackground(yes[z]);
-                //}
+
 
                 g2d.drawString("Stock: " + (currentstock+1)+"/"+annoyinggrain,frame.getWidth()-480, frame.getHeight()-90);
             } catch (NumberFormatException e) {
