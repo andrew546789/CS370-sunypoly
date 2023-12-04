@@ -211,68 +211,39 @@ class FFDH {
 
     public static ArrayList<Box2> setBoxesPositions(ArrayList<Box2> boxes, ArrayList<Stock> stocks) {
         int i, j = 0;
-        float tempTallest = boxes.get(0).getLength();
+        float tempTallestPerStock [] = new float [stocks.size()];
 
         // Get order boxes based on their stocks then their level
         orderBoxesStocksLevels(boxes, stocks);
+
+        // Initialize temp tallest per stock
+        tempTallestPerStock[0] = boxes.get(0).getLength();
 
         // Go through every box
         for(i = 1; i < boxes.size(); i++) {
             // Go through every stock of every box
             for(j = 0; j < stocks.size(); j++) {
-                //tempTallest = boxes.get(i).getLength();
-
                 // If the current stock is the same as the box's stock
                 if(j == boxes.get(i).getStock()) {
                     if(boxes.get(i).getStock() != boxes.get(i - 1).getStock()) {
                         boxes.get(i).setPosx(0);
                         boxes.get(i).setPosy(0);
+                        tempTallestPerStock[j] = boxes.get(i).getLength();
                     } else if(boxes.get(i).getLevel() == boxes.get(i - 1).getLevel()) { //&&
                         // Set the x pos to the previous box's width and the y pos to the previous box's y pos if they're on the same level
                         boxes.get(i).setPosx(boxes.get(i - 1).getWidth() + boxes.get(i - 1).getPosx());
                         boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
-                    } else {//if(tempTallest + boxes.get(i).getLength() <= stocks.get(boxes.get(i).getStock()).getStockLength()) {
+                    } else { //if(tempTallest + boxes.get(i).getLength() <= stocks.get(boxes.get(i).getStock()).getStockLength()) {
                         // If new level: reset x pos to 0, set the y pos to the temp tallest, set temp tallest to current length and pos y
                         boxes.get(i).setPosx(0);
-                        boxes.get(i).setPosy(tempTallest);
-                        tempTallest = boxes.get(i).getLength() + boxes.get(i).getPosy();
+                        boxes.get(i).setPosy(tempTallestPerStock[j]);
+                        tempTallestPerStock[j] = boxes.get(i).getLength() + boxes.get(i).getPosy();
 
-                        //System.out.println(tempTallest);
-                    //} else {
-                        //System.out.println(boxes.get(i).getID());
-
-                        // Stop rendering boxes if they cannot fit anywhere
-                        //boxes.get(i).setWidth(0);
-                        //boxes.get(i).setLength(0);
                     }
                 }
             }
         }
-/*
-        // Go through every box to find positions
-        for(i = 1; i < boxes.size(); i++) {
-            if((boxes.get(i).getLevel() == boxes.get(i - 1).getLevel()) && (boxes.get(i).getStock() == boxes.get(i - 1).getStock())) {
-                // Set the x pos to the previous box's width and the y pos to the previous box's y pos if they're on the same level
-                boxes.get(i).setPosx(boxes.get(i - 1).getWidth() + boxes.get(i - 1).getPosx());
-                boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
-            } else if(tempTallest + boxes.get(i).getLength() <= stocks.get(boxes.get(i).getStock()).getStockLength()) {// get box's stock
-                // If new level: reset x pos to 0, set the y pos to the temp tallest, set temp tallest to current length and pos y
-                boxes.get(i).setPosx(0);
-                boxes.get(i).setPosy(tempTallest);
-                tempTallest = boxes.get(i).getLength() + boxes.get(i).getPosy();
-                System.out.println(tempTallest);
-            } else {
-                System.out.println(boxes.get(i).getID());
 
-                // Stop rendering boxes if they cannot fit anywhere
-                boxes.get(i).setWidth(0);
-                boxes.get(i).setLength(0);
-
-
-            }
-        }
-
- */
         return boxes;
     }
 
