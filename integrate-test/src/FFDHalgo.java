@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
-
 class Stock {
     private float stockWidth, stockLength;
 
@@ -46,6 +45,7 @@ class Box2 {
         setLength(length);
         setID(ID);
         setGrain(grain);
+        setLevel(-1);
     }
 }
 
@@ -142,13 +142,12 @@ class FFDH {
         // Get ordered boxes
         boxes = simpleBoxSort(boxes, graindir);
 
-        printBoxes(boxes);
-
-        System.out.println("---------------------------------------------");
-
         // Initialize variables
         currentLengthPerStock[0] = boxes.get(0).getLength();
         levelWidths[0][0] = boxes.get(0).getWidth();
+        boxes.get(0).setLevel(0);
+
+        float testTallest = boxes.get(0).getLength();
 
         // Go through every box
         for(i = 1; i < boxes.size(); i++) {
@@ -158,32 +157,30 @@ class FFDH {
                 // Go through every level
                 for(j = 0; j < boxes.size(); j++) {
                     // Find correct level when current widths of the level + the box are less than or equal to the board width
-                    if((levelWidths[t][j] + boxes.get(i).getWidth()) <= stocks.get(t).getStockWidth()
-                    && ((currentLengthPerStock[t] + boxes.get(i).getLength()) <= stocks.get(t).getStockLength())
-                    //&& (boxes.get(i).getWidth() <= stocks.get(t).getStockWidth())
-                    //&& (boxes.get(i).getLength() <= stocks.get(t).getStockLength())
-                    )
+                    if((levelWidths[t][j] + boxes.get(i).getWidth() <= stocks.get(t).getStockWidth())
+                            && (currentLengthPerStock[t] + boxes.get(i).getLength() <= stocks.get(t).getStockLength()))
                     {
-                        // Always set the level of the box
+                        // Always set the level and stock of the box
                         boxes.get(i).setLevel(j);
                         boxes.get(i).setStock(t);
 
                         // Always add to the running width
                         levelWidths[t][j] += boxes.get(i).getWidth();
-                        System.out.println(levelWidths[t][j] + " lvl: " + boxes.get(i).getLevel());
 
-                        //System.out.println(boxes.get(i).getID() + " " + currentLengthPerStock[t] + " " + t);
-
-                        if((boxes.get(i).getLevel() != boxes.get(i - 1).getLevel()) && (boxes.get(i).getStock() == boxes.get(i - 1).getStock())) {
-                            currentLengthPerStock[t] += boxes.get(i).getLength();
-                            //System.out.println(boxes.get(i - 1).getID() + " meow " + boxes.get(i).getID() + " " + currentLengthPerStock[t] + " " + t);
+                        // new level
+                        if(boxes.get(i).getLevel() != boxes.get(i - 1).getLevel()) {
+                            currentLengthPerStock[0] += boxes.get(i).getLength();
                         }
 
                         break stock;
-                    } else {
-                        //System.out.println(boxes.get(i).getID());
                     }
                 }
+            }
+
+            // Delete boxes that cannot be rendered anywhere
+            if(boxes.get(i).getLevel() == -1) {
+                boxes.get(i).setLength(0);
+                boxes.get(i).setWidth(0);
             }
         }
 
@@ -229,7 +226,7 @@ class FFDH {
                         boxes.get(i).setPosx(0);
                         boxes.get(i).setPosy(0);
                         tempTallestPerStock[j] = boxes.get(i).getLength();
-                    } else if(boxes.get(i).getLevel() == boxes.get(i - 1).getLevel()) { //&&
+                    } else if(boxes.get(i).getLevel() == boxes.get(i - 1).getLevel()) {
                         // Set the x pos to the previous box's width and the y pos to the previous box's y pos if they're on the same level
                         boxes.get(i).setPosx(boxes.get(i - 1).getWidth() + boxes.get(i - 1).getPosx());
                         boxes.get(i).setPosy(boxes.get(i - 1).getPosy());
@@ -243,6 +240,8 @@ class FFDH {
                 }
             }
         }
+
+        printBoxes(boxes);
 
         return boxes;
     }
